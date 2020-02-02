@@ -21,17 +21,17 @@ module HW1
 
 -- 1a. exists
 exists :: Eq t => t -> [t] -> Bool
-exists a [b] = elem a [b]
+exists a b = elem a b
 
 -- 1b. type for exists
 
 
 -- 1.c countInList
-
+--countInList :: (Num p, Eq t) => t -> [t] -> p
 
 
 -- 2. listDiff
-
+--listDiff :: Eq a => [a] -> [a] -> [a]
 
 
 -- 3. firstN
@@ -39,11 +39,11 @@ exists a [b] = elem a [b]
 
 
 -- 4. busFinder
-
+--usFinder :: Eq t => t -> [(a, [t])] -> [a]
 
 
 -- 5. cumulativeSums
-
+--cumulativeSums :: Num a => [a] -> [a]
 
 
 
