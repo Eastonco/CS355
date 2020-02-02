@@ -24,7 +24,9 @@ exists :: Eq t => t -> [t] -> Bool
 exists a b = elem a b
 
 -- 1b. type for exists
-
+--     The type needs the Eq class ince it uses the internal
+--     elem function which defines equality and inequaltiy
+--     aka. comparing two objects
 
 -- 1.c countInList
 --countInList :: (Num p, Eq t) => t -> [t] -> p
