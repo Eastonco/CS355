@@ -21,7 +21,10 @@ module HW1
 
 -- 1a. exists
 exists :: Eq t => t -> [t] -> Bool
-exists a b = elem a b
+exists a (b:bs) | length bs == 0 && a == b = True
+                | length bs == 0 = False
+                | a == b = True
+                | otherwise = exists a bs
 
 -- 1b. type for exists
 --     The type needs the Eq class ince it uses the internal
@@ -40,16 +43,30 @@ countInList p (t:ts)
 
 
 -- 2. listDiff
---listDiff :: Eq a => [a] -> [a] -> [a]
+{-
+listDiff :: Eq a => [a] -> [a] -> [a]
+listDiff src (del:dels)  if length dels == 0 
+                              then let src = DiffHelper src del
+                         else let src = DiffHelper src del 
+                              listDiff src dels
 
+                              
+                         
+
+
+DiffHelper :: Eq a => [a] -> [a] -> [a]
+DiffHelper (src:srcs) del | del == src = srcs
+                          | otherwise src : DiffHelper srcs del
+
+-}
 
 -- 3. firstN
 
 {-
 firstN :: (Num t) => [a] -> t -> [a]
-firstN j k = take j k
-
+firstN j k = take k j
 -}
+
 
 -- 4. busFinder
 --usFinder :: Eq t => t -> [(a, [t])] -> [a]
@@ -61,6 +78,3 @@ firstN j k = take j k
 
 
 -- 6. groupNleft
-
-
-
