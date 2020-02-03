@@ -21,15 +21,16 @@ module HW1
 
 -- 1a. exists
 exists :: Eq t => t -> [t] -> Bool
-exists a (b:bs) | length bs == 0 && a == b = True
-                | length bs == 0 = False
-                | a == b = True
-                | otherwise = exists a bs
+exists a (b:bs)
+     | length bs == 0 && a == b = True
+     | length bs == 0 = False
+     | a == b = True
+     | otherwise = exists a bs
 
 -- 1b. type for exists
---     The type needs the Eq class ince it uses the internal
---     elem function which defines equality and inequaltiy
---     aka. comparing two objects
+--     The type needs the Eq class to define equality
+--     and inequaltiy to compare the two objects
+
 
 -- 1.c countInList
 
@@ -62,10 +63,10 @@ DiffHelper (src:srcs) del | del == src = srcs
 
 -- 3. firstN
 
-{-
-firstN :: (Num t) => [a] -> t -> [a]
-firstN j k = take k j
--}
+firstN :: (Num t, Eq t) => [a] -> t -> [a]
+firstN (j:js) k
+     | k == 1 = js
+     | otherwise = firstN js (k-1)
 
 
 -- 4. busFinder
@@ -78,3 +79,5 @@ firstN j k = take k j
 
 
 -- 6. groupNleft
+
+
