@@ -29,7 +29,14 @@ exists a b = elem a b
 --     aka. comparing two objects
 
 -- 1.c countInList
---countInList :: (Num p, Eq t) => t -> [t] -> p
+
+countInList :: (Num p, Eq t) => t -> [t] -> p
+countInList p (t:ts) 
+     | (length ts == 0 && p==t) = 1
+     | length ts == 0 = 0
+     | p == t = 1 +(countInList p ts)
+     | otherwise = countInList p ts
+
 
 
 -- 2. listDiff
@@ -38,7 +45,11 @@ exists a b = elem a b
 
 -- 3. firstN
 
+{-
+firstN :: (Num t) => [a] -> t -> [a]
+firstN j k = take j k
 
+-}
 
 -- 4. busFinder
 --usFinder :: Eq t => t -> [(a, [t])] -> [a]
