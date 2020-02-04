@@ -20,6 +20,7 @@ module HW1
      where
 
 -- 1a. exists
+
 exists :: Eq t => t -> [t] -> Bool
 exists a (b:bs)
      | length bs == 0 && a == b = True
@@ -44,7 +45,6 @@ countInList p (t:ts)
 
 
 -- 2. listDiff
-
 
 listDiff :: Eq a => [a] -> [a] -> [a]
 listDiff src (del:dels) = let 
@@ -75,15 +75,13 @@ busFinder location (x:xs) = if (exists location (snd x))
 
 
 -- 5. cumulativeSums
-{-
-cumulativeSums :: [a] -> [a]
-cumlativeSums [] = [0]
-cumlativeSums (x:xs) = x : sumHelper xs (x)
+
+cumulativeSums :: (Num a) => [a] -> [a]
+cumulativeSums [] = [0]
+cumulativeSums (x:xs) = x : sumHelper xs (x)
 
 sumHelper [] sum = []
 sumHelper (x:xs) sum = (x+sum) : (sumHelper xs (sum + x))
-
-     -}
 
 -- 6. groupNleft
 
