@@ -65,7 +65,13 @@ firstN (j:js) k
 
 
 -- 4. busFinder
---busFinder :: Eq t => t -> [(a, [t])] -> [a]
+
+busFinder :: Eq t => t -> [(a, [t])] -> [a]
+busFinder location [] = []
+busFinder location (x:xs) = if (exists location (snd x))
+                              then (fst x) : busFinder location xs
+                              else busFinder location xs
+
 
 
 -- 5. cumulativeSums
