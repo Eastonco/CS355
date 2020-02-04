@@ -3,26 +3,13 @@
 -- worked with Zach Barnett
 
 
--- length :: [a] -> integer
--- length [0,1,2,3] => 4
-
--- elem :: Eq a => a -> [a] -> Bool
--- elem 3 [0,1,2,3] => True
--- elem 't' "CptS" => True
-
--- maximum :: Ord a => [a] -> a
--- minimum :: Ord a => [a] -> a
--- sum :: Num a => [a] -> a
--- product :: Num a => [a] -> a
--- sum [0,1,2,3] => 6
--- product [1,2,3,4] => 24
-
 module HW1
      where
 
 -- 1a. exists
 
 exists :: Eq t => t -> [t] -> Bool
+exists a [] = False
 exists a (b:bs)
      | length bs == 0 && a == b = True
      | length bs == 0 = False
@@ -48,6 +35,7 @@ countInList p (t:ts)
 -- 2. listDiff
 
 listDiff :: Eq a => [a] -> [a] -> [a]
+listDiff src [] = src
 listDiff src (del:dels) = let 
                               diffHelper [] del = []
                               diffHelper (src:srcs) del | del == src = srcs
@@ -90,6 +78,7 @@ cumulativeSums (x:xs) = let
 -- 6. groupNleft
 
 groupNleft :: ( Num t, Eq t, Eq a) => t -> [a] -> [[a]]
+groupNleft 0 list = [list]
 groupNleft count [] = []
 groupNleft count list = let
                          bagMe :: (Num t, Eq t) => t -> [a] -> [a]
