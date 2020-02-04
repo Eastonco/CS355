@@ -53,7 +53,7 @@ listDiff src (del:dels) = let
                                                         | otherwise = src : diffHelper srcs del
                           in
                               if (null dels) == False then listDiff (diffHelper src del) dels 
-                              else src 
+                              else diffHelper src del
 
 
 -- 3. firstN
@@ -69,6 +69,7 @@ firstN (j:js) k
 
 
 -- 5. cumulativeSums
+{-
 cumulativeSums :: [a] -> [a]
 cumlativeSums [] = [0]
 cumlativeSums (x:xs) = x : sumHelper xs (x)
@@ -76,7 +77,7 @@ cumlativeSums (x:xs) = x : sumHelper xs (x)
 sumHelper [] sum = []
 sumHelper (x:xs) sum = (x+sum) : (sumHelper xs (sum + x))
 
-     
+     -}
 
 -- 6. groupNleft
 
