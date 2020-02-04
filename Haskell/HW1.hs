@@ -78,10 +78,14 @@ busFinder location (x:xs) = if (exists location (snd x))
 
 cumulativeSums :: (Num a) => [a] -> [a]
 cumulativeSums [] = [0]
-cumulativeSums (x:xs) = x : sumHelper xs (x)
+cumulativeSums (x:xs) = let
+                         sumHelper [] sum = []
+                         sumHelper (x:xs) sum = (x+sum) : (sumHelper xs (sum + x))
+                        in
+                         x : sumHelper xs (x)
 
-sumHelper [] sum = []
-sumHelper (x:xs) sum = (x+sum) : (sumHelper xs (sum + x))
+
 
 -- 6. groupNleft
+
 
