@@ -44,22 +44,17 @@ countInList p (t:ts)
 
 
 -- 2. listDiff
-{-
+
+
 listDiff :: Eq a => [a] -> [a] -> [a]
-listDiff src (del:dels)  if length dels == 0 
-                              then let src = DiffHelper src del
-                         else let src = DiffHelper src del 
-                              listDiff src dels
+listDiff src (del:dels) = let 
+                              diffHelper [] del = []
+                              diffHelper (src:srcs) del | del == src = srcs
+                                                        | otherwise = src : diffHelper srcs del
+                          in
+                              if (null dels) == False then listDiff (diffHelper src del) dels 
+                              else src 
 
-                              
-                         
-
-
-DiffHelper :: Eq a => [a] -> [a] -> [a]
-DiffHelper (src:srcs) del | del == src = srcs
-                          | otherwise src : DiffHelper srcs del
-
--}
 
 -- 3. firstN
 
@@ -70,14 +65,18 @@ firstN (j:js) k
 
 
 -- 4. busFinder
---usFinder :: Eq t => t -> [(a, [t])] -> [a]
+--busFinder :: Eq t => t -> [(a, [t])] -> [a]
 
 
 -- 5. cumulativeSums
---cumulativeSums :: Num a => [a] -> [a]
+cumulativeSums :: [a] -> [a]
+cumlativeSums [] = [0]
+cumlativeSums (x:xs) = x : sumHelper xs (x)
 
+sumHelper [] sum = []
+sumHelper (x:xs) sum = (x+sum) : (sumHelper xs (sum + x))
 
+     
 
 -- 6. groupNleft
-
 
