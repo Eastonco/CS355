@@ -1,5 +1,6 @@
 -- CptS 355 - Spring 2020 Assignment 1
 -- Connor Easton 11557902
+-- worked with Zach Barnett
 
 
 -- length :: [a] -> integer
@@ -59,9 +60,10 @@ listDiff src (del:dels) = let
 -- 3. firstN
 
 firstN :: (Num t, Eq t) => [a] -> t -> [a]
+firstN [] k = []
 firstN (j:js) k
-     | k == 1 = js
-     | otherwise = firstN js (k-1)
+     |k == 0 = []
+     |otherwise = j : firstN js(k-1)
 
 
 -- 4. busFinder
@@ -85,7 +87,19 @@ cumulativeSums (x:xs) = let
                          x : sumHelper xs (x)
 
 
-
 -- 6. groupNleft
+
+groupNleft :: ( Num t, Eq t, Eq a) => t -> [a] -> [[a]]
+groupNleft count [] = []
+groupNleft count list = let
+                         bagMe :: (Num t, Eq t) => t -> [a] -> [a]
+                         bagMe count [] = []
+                         bagMe count (x:xs) | count == 0 = []
+                                        | otherwise = x : (bagMe (count-1) xs)
+                        in
+                         bagMe count list : if ( null (listDiff list (firstN list count)) == True) then []
+                                             else (groupNleft count (listDiff list (firstN list count))) 
+
+
 
 
