@@ -84,7 +84,7 @@ groupNleft count list = let
                          bagMe :: (Num t, Eq t) => t -> [a] -> [a]
                          bagMe count [] = []
                          bagMe count (x:xs) | count == 0 = []
-                                        | otherwise = x : (bagMe (count-1) xs)
+                                            | otherwise = x : (bagMe (count-1) xs)
                         in
                          bagMe count list : if ( null (listDiff list (firstN list count)) == True) then []
                                              else (groupNleft count (listDiff list (firstN list count))) 
