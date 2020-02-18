@@ -6,19 +6,30 @@ module HW2
 
 
 {- intersect & intersectTail & intersectAll - 22%-}
---intersect
+--intersect 
+intersect :: Eq a => [a] -> [a] -> [a]
+intersect [] l2 = []
+intersect (x:xs) l2 
+     | elem x l2 = x : intersect xs l2
+     | otherwise = intersect xs l2
 
 
 
 --intersectTail
+intersectTail :: Eq a => [a] -> [a] -> [a]
+intersectTail l1 l2 = intersect l1 l2 
+-- Intersect already utilizes tail recurssion
 
 
 
+{-
 --intersectAll
-
+intersectAll :: (Foldable t, Ord a) => t [a] -> [a] OR
+intersectAll:: Ord a => [[a]] -> [a]
 
 
 {-2 - partition - 10%-}
+partition :: (a -> Bool) -> [a] -> ([a], [a])
 
 
 
@@ -52,7 +63,9 @@ data Tree a = LEAF a | NODE a (Tree a) (Tree a)
 
 
 --addTrees
+addTrees :: Num a => Tree a -> Tree a -> Tree a
 
 
 {- 5- Create two trees of type Tree. The height of both trees should be at least 4. Test your functions depthScan, depthSearch, addTrees with those trees. 
 The trees you define should be different than those that are given.   -}
+-}
