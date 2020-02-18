@@ -24,21 +24,25 @@ intersectTail l1 l2 = intersect l1 l2
 
 {-
 --intersectAll
-intersectAll :: (Foldable t, Ord a) => t [a] -> [a] OR
 intersectAll:: Ord a => [[a]] -> [a]
+intersectAll = foldr intersect  
 
 
 {-2 - partition - 10%-}
 partition :: (a -> Bool) -> [a] -> ([a], [a])
-
+-}
 
 
 {- 3 - sumL, sumMaybe, and sumEither - 27% -}
 
 --sumL
+sumL :: (Num b) => [[b]] -> b
+sumL [] = 0
+sumL (x:xs) = (foldr (+) 0 x) + (sumL xs)
 
 
 
+{-
 -- sumMaybe 
 
 
