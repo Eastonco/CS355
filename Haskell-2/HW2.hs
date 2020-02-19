@@ -26,11 +26,11 @@ intersectTail l1 l2 = intersect l1 l2
 --intersectAll
 intersectAll:: Ord a => [[a]] -> [a]
 intersectAll = foldr intersect  
-
+-}
 
 {-2 - partition - 10%-}
 partition :: (a -> Bool) -> [a] -> ([a], [a])
--}
+partition isTrue list = (filter isTrue list, filter (not.isTrue) list)
 
 
 {- 3 - sumL, sumMaybe, and sumEither - 27% -}
@@ -40,7 +40,7 @@ sumL :: (Num b) => [[b]] -> b
 sumL [] = 0
 sumL (x:xs) = (foldr (+) 0 x) + (sumL xs)
 
-
+--map (foldr (+) 0 x)
 
 {-
 -- sumMaybe 
