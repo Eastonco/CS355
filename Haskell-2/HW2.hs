@@ -22,19 +22,6 @@ intersect l1 l2 = let
                  in
                     removeDupes (intersectHelper l1 l2)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 --intersectTail
 intersectTail :: Eq a => [a] -> [a] -> [a]
 intersectTail l1 l2 = let 
@@ -46,12 +33,10 @@ intersectTail l1 l2 = let
                          intersectTailHelper l1 l2 []
 
 
-
-
-
 --intersectAll
---intersectAll:: Ord a => [[a]] -> [a]
---intersectAll list = foldr intersect
+intersectAll:: Ord a => [[a]] -> [a]
+intersectAll (x:xs) = (foldr (intersectTail) x xs)
+
 
 
 {-2 - partition - 10%-}
@@ -69,13 +54,6 @@ sumL l1 = let
            sumHelper l1 = (foldr (+) 0 l1)
           in
            sumHelper (map sumHelper l1)
-
-     
-
-
-
-
-
 
 {-
 -- sumMaybe 
