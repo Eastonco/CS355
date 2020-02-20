@@ -1,4 +1,5 @@
 -- CptS 355 - Spring 2020 Assignment 2
+-- Connor Easton 11557902
 -- Please include your name and the names of the students with whom you discussed any of the problems in this homework
 
 module HW2
@@ -9,24 +10,49 @@ module HW2
 --intersect 
 intersect :: Eq a => [a] -> [a] -> [a]
 intersect [] l2 = []
-intersect (x:xs) l2 
-     | elem x l2 = x : intersect xs l2
-     | otherwise = intersect xs l2
+intersect l1 l2 = let
+                    intersectHelper [] l2 = []
+                    intersectHelper (x:xs) l2
+                         | elem x l2 = x : intersect xs l2
+                         | otherwise = intersect xs l2
+                    removeDupes [] = []
+                    removeDupes (x:xs)
+                         | elem x xs = removeDupes xs
+                         | otherwise = x : removeDupes xs
+                 in
+                    removeDupes (intersectHelper l1 l2)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 --intersectTail
 intersectTail :: Eq a => [a] -> [a] -> [a]
-intersectTail l1 l2 = intersect l1 l2 
--- Intersect already utilizes tail recurssion
+intersectTail l1 l2 = let 
+                         intersectTailHelper [] l2 acc = reverse acc
+                         intersectTailHelper (x:xs) l2 acc
+                              | elem x l2 =  intersectTailHelper xs l2 (x:acc)
+                              | otherwise = intersectTailHelper xs l2 acc
+                      in
+                         intersectTailHelper l1 l2 []
 
 
 
-{-
+
+
 --intersectAll
-intersectAll:: Ord a => [[a]] -> [a]
-intersectAll = foldr intersect  
--}
+--intersectAll:: Ord a => [[a]] -> [a]
+--intersectAll list = foldr intersect
+
 
 {-2 - partition - 10%-}
 partition :: (a -> Bool) -> [a] -> ([a], [a])
@@ -38,15 +64,30 @@ partition isTrue list = (filter isTrue list, filter (not.isTrue) list)
 --sumL
 sumL :: (Num b) => [[b]] -> b
 sumL [] = 0
-sumL (x:xs) = (foldr (+) 0 x) + (sumL xs)
+sumL l1 = let
+           sumHelper [] = 0
+           sumHelper l1 = (foldr (+) 0 l1)
+          in
+           sumHelper (map sumHelper l1)
 
---map (foldr (+) 0 x)
+     
+
+
+
+
+
 
 {-
 -- sumMaybe 
+sumMaybe :: (Num a) => [[Maybe a]] -> Maybe a
 
+{-
+sumMaybe Nothing Nothing = Nothing
+sumMaybe Nothing (Just x) = (Just x)
+sumMaybe (Just x) Nothing = (Just x)
+sumMaybe (Just x) (Just y) = (Just (x+y))
 
-
+-}
 -- sumEither
 
 data IEither  = IString String | IInt Int
