@@ -55,22 +55,27 @@ sumL l1 = let
           in
            sumHelper (map sumHelper l1)
 
-{-
+
 -- sumMaybe 
 sumMaybe :: (Num a) => [[Maybe a]] -> Maybe a
+sumMaybe [] = Nothing
+sumMaybe l1 = let
+               maybeTest l1 = (foldr (sumMaybeHelper) Nothing l1)
+               sumMaybeHelper Nothing Nothing = Nothing
+               sumMaybeHelper Nothing (Just x) = (Just x)
+               sumMaybeHelper (Just x) Nothing = (Just x)
+               sumMaybeHelper (Just x) (Just y) = (Just (x+y))
+              in
+               maybeTest (map maybeTest l1)
 
-{-
-sumMaybe Nothing Nothing = Nothing
-sumMaybe Nothing (Just x) = (Just x)
-sumMaybe (Just x) Nothing = (Just x)
-sumMaybe (Just x) (Just y) = (Just (x+y))
 
--}
+
 -- sumEither
 
 data IEither  = IString String | IInt Int
                 deriving (Show, Read, Eq)
 
+{-
 
 {-4 - depthScan, depthSearch, addTrees - 37%-}
 
