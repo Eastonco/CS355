@@ -29,8 +29,12 @@ intersectTail l1 l2 = let
                          intersectTailHelper (x:xs) l2 acc
                               | elem x l2 =  intersectTailHelper xs l2 (x:acc)
                               | otherwise = intersectTailHelper xs l2 acc
+                         removeDupes [] acc = acc
+                         removeDupes (x:xs) acc
+                              | elem x xs = removeDupes xs acc
+                              | otherwise = removeDupes xs (x:acc)
                       in
-                         intersectTailHelper l1 l2 []
+                         reverse (removeDupes (intersectTailHelper l1 l2 []) [])
 
 
 --intersectAll
@@ -107,21 +111,17 @@ depthSearch tree target = let
                                    | otherwise = -1
                               depthSearchHelper (NODE a (left) (right)) target level
                                    | ((depthSearchHelper left target (level + 1)) /= -1) = depthSearchHelper left target (level + 1)
-                                   | otherwise = (depthSearchHelper right target (level +1))
+                                   | otherwise = (depthSearchHelper right target (level + 1))
                            in
                               depthSearchHelper tree target 1
 
-     
 
-
-
-
-
-{-
 --addTrees
 addTrees :: Num a => Tree a -> Tree a -> Tree a
+addTrees left right = LEAF 3
+
+
 
 
 {- 5- Create two trees of type Tree. The height of both trees should be at least 4. Test your functions depthScan, depthSearch, addTrees with those trees. 
 The trees you define should be different than those that are given.   -}
--}

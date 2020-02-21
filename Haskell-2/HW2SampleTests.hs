@@ -7,7 +7,7 @@ module HW2SampleTests
 import Test.HUnit
 import Data.Char
 import Data.List (sort)
-import HW2_solutions
+import HW2
 
 {- Two useful functions in the HUnit package are assertEqual and assertBool.
 The arguments to 'assertEqual' are:
