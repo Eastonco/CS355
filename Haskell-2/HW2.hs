@@ -60,20 +60,34 @@ sumL l1 = let
 sumMaybe :: (Num a) => [[Maybe a]] -> Maybe a
 sumMaybe [] = Nothing
 sumMaybe l1 = let
-               maybeTest l1 = (foldr (sumMaybeHelper) Nothing l1)
+               sumMaybeBase l1 = (foldr (sumMaybeHelper) Nothing l1)
+
                sumMaybeHelper Nothing Nothing = Nothing
                sumMaybeHelper Nothing (Just x) = (Just x)
                sumMaybeHelper (Just x) Nothing = (Just x)
                sumMaybeHelper (Just x) (Just y) = (Just (x+y))
               in
-               maybeTest (map maybeTest l1)
+               sumMaybeBase(map sumMaybeBase l1)
 
 
 
 -- sumEither
-
 data IEither  = IString String | IInt Int
                 deriving (Show, Read, Eq)
+
+sumEither :: [[IEither]] -> IEither
+sumEither l1 = let
+                    getInt x = read x::Int
+
+                    sumEitherBase l1 = (foldr (sumEitherHelper) (IInt 0) l1)
+
+                    sumEitherHelper (IString string1) (IString string2) = IInt ((getInt string1) + (getInt string2))
+                    sumEitherHelper (IString string) (IInt num) = IInt ((getInt string) + num)
+                    sumEitherHelper (IInt num) (IString string) = IInt (num + (getInt string))
+                    sumEitherHelper (IInt num1) (IInt num2) = IInt (num1 + num2)
+               in 
+                    sumEitherBase(map sumEitherBase l1)
+
 
 {-
 
