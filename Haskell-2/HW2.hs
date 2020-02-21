@@ -131,3 +131,6 @@ copyTree (NODE a t1 t2) = NODE a (copyTree t1) (copyTree t2)
 
 {- 5- Create two trees of type Tree. The height of both trees should be at least 4. Test your functions depthScan, depthSearch, addTrees with those trees. 
 The trees you define should be different than those that are given.   -}
+
+tree1 = NODE 1 (NODE 2 (NODE 3 (LEAF 4) (LEAF 5)) (NODE 6 (LEAF 7) (LEAF 8))) (NODE 9 (NODE 10 (LEAF 11) (LEAF 12)) (NODE 13 (LEAF 14) (LEAF 15)))
+tree2 = NODE 1 (NODE 2 (NODE 3 (LEAF 4) (LEAF 5)) (LEAF 4)) (NODE 9 (LEAF 3) (NODE 13 (LEAF 14) (LEAF 15)))
