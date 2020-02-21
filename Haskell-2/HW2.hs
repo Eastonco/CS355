@@ -100,6 +100,21 @@ depthScan (LEAF a) = [a]
 depthScan (NODE a (left) (right)) = (depthScan left) ++ (depthScan right) ++ [a]
 
 --depthSearch
+depthSearch :: (Ord p, Num p, Eq a) => Tree a -> a -> p
+depthSearch tree target = let
+                              depthSearchHelper (LEAF a) target level 
+                                   | (target == a) = level
+                                   | otherwise = -1
+                              depthSearchHelper (NODE a (left) (right)) target level
+                                   | ((depthSearchHelper left target (level + 1)) /= -1) = depthSearchHelper left target (level + 1)
+                                   | otherwise = (depthSearchHelper right target (level +1))
+                           in
+                              depthSearchHelper tree target 1
+
+     
+
+
+
 
 
 {-
