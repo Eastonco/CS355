@@ -89,21 +89,20 @@ sumEither l1 = let
                     sumEitherBase(map sumEitherBase l1)
 
 
-{-
-
 {-4 - depthScan, depthSearch, addTrees - 37%-}
 
 data Tree a = LEAF a | NODE a (Tree a) (Tree a)
               deriving (Show, Read, Eq)
  
 --depthScan
-
-
+depthScan :: Tree a -> [a]
+depthScan (LEAF a) = [a]
+depthScan (NODE a (left) (right)) = (depthScan left) ++ (depthScan right) ++ [a]
 
 --depthSearch
 
 
-
+{-
 --addTrees
 addTrees :: Num a => Tree a -> Tree a -> Tree a
 
