@@ -118,9 +118,15 @@ depthSearch tree target = let
 
 --addTrees
 addTrees :: Num a => Tree a -> Tree a -> Tree a
-addTrees left right = LEAF 3
+--addTrees left right = LEAF 3
+addTrees (LEAF a) (LEAF b) = LEAF (a + b)
+addTrees (NODE a lefta righta) (NODE b leftb rightb) = NODE (a+b) (addTrees (lefta) (leftb)) (addTrees (righta) (rightb))
+addTrees (NODE a lefta righta) (LEAF b) = NODE (a+b) (copyTree lefta) (copyTree righta)
+addTrees (LEAF a) (NODE b leftb rightb) = NODE (a+b) (copyTree leftb) (copyTree rightb)
 
 
+copyTree (LEAF x) = LEAF x
+copyTree (NODE a t1 t2) = NODE a (copyTree t1) (copyTree t2)
 
 
 {- 5- Create two trees of type Tree. The height of both trees should be at least 4. Test your functions depthScan, depthSearch, addTrees with those trees. 
