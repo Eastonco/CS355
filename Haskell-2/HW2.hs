@@ -116,6 +116,7 @@ depthSearch tree target = let
                               depthSearchHelper tree target 1
 
 
+                              
 --addTrees
 addTrees :: Num a => Tree a -> Tree a -> Tree a
 --addTrees left right = LEAF 3
