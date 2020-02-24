@@ -124,6 +124,7 @@ addTrees (NODE a lefta righta) (NODE b leftb rightb) = NODE (a+b) (addTrees (lef
 addTrees (NODE a lefta righta) (LEAF b) = NODE (a+b) (copyTree lefta) (copyTree righta)
 addTrees (LEAF a) (NODE b leftb rightb) = NODE (a+b) (copyTree leftb) (copyTree rightb)
 
+
 copyTree (LEAF x) = LEAF x
 copyTree (NODE a t1 t2) = NODE a (copyTree t1) (copyTree t2)
 
