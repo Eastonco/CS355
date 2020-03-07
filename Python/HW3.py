@@ -143,6 +143,15 @@ class interlaceIter:
 
 
         
-
-
-#def typeHistogram (it,n):    
+def typeHistogram (it,n):    
+    ints = 0
+    strs = 0
+    count = 0
+    while count < n:
+        if type(next(it)) is int:
+            ints += 1
+            count +=1
+        else:
+            strs += 1
+            count +=1
+    return [('int', ints),('str', strs)]
