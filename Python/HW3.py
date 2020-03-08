@@ -1,14 +1,17 @@
+# Connor Easton - 11557902
+# Created: March 7, 2020
+# Last Updated: ^
+# WSU CPTS 355, Assignment 3, Spring 2020
+
+# Used for debugging... duh
 debugging = True 
 def debug(*s):
     if debugging: 
         print(*s)
 
-
-
-
-
-#sales = {'Amazon':{'Mon':30,'Wed':100,'Sat':200},'Etsy':{'Mon':50,'Tue':20,'Wed':25,'Fri':30},'Ebay':{'Tue':60,'Wed':100,'Thu':30},'Shopify':{'Tue':100,'Thu':50,'Sat':20}}
-
+# Accepts a dictionary of -> {'str1': {'str2':int}}
+# Returns a single dictionary -> {'str2': ints}
+# sums all entries value index in input dict
 def sumSales(d):
     totalSales = {}
     for sales in d.values():
@@ -19,11 +22,7 @@ def sumSales(d):
                 totalSales[day] = price
     return totalSales
 
-
-#weekSales = [{'Amazon':{'Mon':30,'Wed':100,'Sat':200},'Etsy':{'Mon':50,'Tue':20,'Wed':25,'Fri':30},'Ebay':{'Tue':60,'Wed':100,'Thu':30},'Shopify':{'Tue':100,'Thu':50,'Sat':20}},
-#{'Shopify':{'Mon':25},'Etsy':{'Thu':40, 'Fri':50},'Ebay':{'Mon':100,'Sat':30}}, {'Amazon':{'Sun':88},'Etsy':{'Fri':55},'Ebay':{'Mon':40}, 'Shopify':{'Sat':35}}]
-#list of two dicts
-
+# Same as sumSales except input is list of dictionaries -> [{'str1': {'str2':int}}]
 def sumSalesN(L):
     totalSales = {}
     count = 1
@@ -32,9 +31,8 @@ def sumSalesN(L):
         count += 1
     return sumSales(totalSales)
 
-
-#L1 = [{"x":1,"y":True,"z":"found"},{"x":2},{"y":False}]
-
+# Accepts a list of Dictionaries(L) -> [{"str":val}] and a key(k) "str"
+# Returns the correstponding value to the key if it exists, else: returns None
 def searchDicts(L,k):
     L.reverse()
     for dict in L:
@@ -42,12 +40,16 @@ def searchDicts(L,k):
             return dict.get(k)
     return None
 
-#L2 = [(0,{"x":0,"y":True,"z":"zero"}), (0,{"x":1}),(1,{"y":False}), (1,{"x":3, "z":"three"}), (2,{})]
-
+# Accepts a list of tuples(L) of int and dict -> [(int,{"str":val})] and a key value(k) -> "str"
+# Returns the corresponding value to the key if found, otherwise returns None
+# Starting at end of the list, searches first dict for value
+#   if not found uses the tuple int as an index to go to the corresponding
+#   next dict, some dicts may not be searched
 def searchDicts2(L,k):
     return dictHelper(L,k,(len(L)-1))
 
-
+# Helper funciton to searchDicts2() - recursive
+# Accepts the same as searchDicts2 except with an index to search
 def dictHelper(L,k,index):
     if k in L[index][1]:
         return L[index][1].get(k)
@@ -55,14 +57,10 @@ def dictHelper(L,k,index):
         return None
     else:
         return dictHelper(L,k,L[index][0])
-"""
-buses = {
-"Lentil": ["Chinook", "Orchard", "Valley", "Emerald","Providence", "Stadium", "Main", "Arbor", "Sunnyside", "Fountain", "Crestview", "Wheatland", "Walmart", "Bishop", "Derby", "Dilke"],
-"Wheat": ["Chinook", "Orchard", "Valley", "Maple","Aspen", "TerreView", "Clay", "Dismores", "Martin", "Bishop", "Walmart", "PorchLight", "Campus"], "Silver": ["TransferStation", "PorchLight", "Stadium", "Bishop","Walmart", "Shopco", "RockeyWay"],
-"Blue": ["TransferStation", "State", "Larry", "TerreView","Grand", "TacoBell", "Chinook", "Library"],
-"Gray": ["TransferStation", "Wawawai", "Main", "Sunnyside","Crestview", "CityHall", "Stadium", "Colorado"]
-}"""
 
+# Accepts a dict of strings(buses) and list of stirngs -> {"str": ["str1"]}
+#   and a target stop(stop) -> "str"
+# Returns a list of str that match target
 def busStops (buses,stop):
     buslist = []
     for route, stops in buses.items():
@@ -70,6 +68,8 @@ def busStops (buses,stop):
             buslist.append(route)
     return buslist
 
+# Accepts a string(S) -> 'str'
+# Returns all possible palindromes in the string
 def palindromes(S):
     palindrome = []
     index = 2
@@ -78,11 +78,14 @@ def palindromes(S):
         index += 1
     return sorted(removeDupes(palindrome))
 
-
-def palindromeIndex(S,l):
+# Helper function to palindromes()
+# Accepts a string(S) -> "str" and an index(n) -> int
+# Iterates over a sub set between 0 and n until reaching the end of the string
+# Returns all palindromes between the two indecies
+def palindromeIndex(S,n):
     palindrome = []
     start = 0
-    end = l
+    end = n
     while end <= len(S):
         if(palindromeHelper(S[start:end])):
             palindrome.append(S[start:end])
@@ -90,6 +93,9 @@ def palindromeIndex(S,l):
         end += 1
     return palindrome
 
+# Helper function to palindromes()
+# accepts a List and removes all duplicates
+# Returns a list
 def removeDupes(L):
     list = []
     for val in L:
@@ -97,21 +103,26 @@ def removeDupes(L):
             list.append(val)
     return list
 
+# Helper function to palindromes()
+# Accepts a string(s)
+# Returns a boolean
+# Tests to see if the string == reverse(string)
 def palindromeHelper(s):
     tmp = s [::-1]
     if(tmp == s):
         return True
     return False
 
-
-
 class interlaceIter:
+
+    # Accepts two iterator values for constructor
     def __init__(self, l1, l2):
             self.itr1 = l1
             self.itr2 = l2
             self.count = 0
             self.isEnd = False
 
+    # Returns the next value, alternating between the two iterators
     def __next__(self):
         if self.isEnd == True:
             raise StopIteration 
@@ -127,11 +138,15 @@ class interlaceIter:
             self.isEnd= True
             raise StopIteration
 
+    # Enables the object to be iterated though in a for loop
     def __iter__(self):
         return self
 
-
-        
+# Accepts an iterator(it) and an int(n)
+# Returns a list of tupels -> [(str, int)] for all entires in d
+# iterates through the iterator n times. Checks the return type of
+#   the iterator and places it into a corrisponding dict(sequencedict)
+#   entry. Essentialy counting the number of occouraces of a given type
 def typeHistogram (it,n):    
     count = 0
     sequencedict = {}
@@ -171,9 +186,11 @@ def typeHistogram (it,n):
             break
     return dictToList(sequencedict)
 
+# Helper function to typeHistogram()
+# Accepts a dictionary(d) -> {'str': int}
+# Returns a list of tupels -> [(str, int)] for all entires in d
 def dictToList(d):
     returnList = []
     for type, count in d.items():
         returnList.append((type, count))
     return returnList
-

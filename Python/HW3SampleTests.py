@@ -5,29 +5,47 @@ class HW3SampleTests(unittest.TestCase):
     def setUp(self):
         pass
     def test_sumSales(self):
-        salesLog= {'Amazon':{'Mon':30,'Wed':100,'Sat':200},'Etsy':{'Mon':50,'Tue':20,'Wed':25,'Fri':30},'Ebay':{'Tue':60,'Wed':100,'Thu':30},'Shopify':{'Tue':100,'Thu':50,'Sat':20}}
+        salesLog = {'Amazon':{'Mon':30,'Wed':100,'Sat':200},'Etsy':{'Mon':50,'Tue':20,'Wed':25,'Fri':30},'Ebay':{'Tue':60,'Wed':100,'Thu':30},'Shopify':{'Tue':100,'Thu':50,'Sat':20}}
         summedLog = {'Fri': 30, 'Mon': 80, 'Sat': 220, 'Thu': 80, 'Tue': 180, 'Wed': 225}
         self.assertDictEqual(sumSales(salesLog),summedLog)
+        salesLog1 = {'Amazon':{'Mon':42,'Wed':110,'Sat':21},'Etsy':{'Mon':75,'Tue':42,'Wed':55,'Fri':33},'Ebay':{'Tue':37,'Wed':1562,'Thu':31},'Shopify':{'Tue':10,'Thu':40,'Sat':80}}
+        summedLog1 = {'Mon': 117, 'Wed': 1727, 'Sat': 101, 'Tue': 89, 'Fri': 33, 'Thu': 71}
+        self.assertDictEqual(sumSales(salesLog1),summedLog1)
+        salesLog2 = {}
+        summedLog2 = {}
+        self.assertDictEqual(sumSales(salesLog2),summedLog2)
+
 
     def test_sumSalesN(self):
         salesLogN = [{'Amazon':{'Mon':30,'Wed':100,'Sat':200},'Etsy':{'Mon':50,'Tue':20,'Wed':25,'Fri':30},'Ebay':{'Tue':60,'Wed':100,'Thu':30},'Shopify':{'Tue':100,'Thu':50,'Sat':20}},{'Shopify':{'Mon':25},'Etsy':{'Thu':40, 'Fri':50}, 'Ebay':{'Mon':100,'Sat':30}},{'Amazon':{'Sun':88},'Etsy':{'Fri':55},'Ebay':{'Mon':40},'Shopify':{'Sat':35}}]
         summedLogN = {'Fri': 135,'Mon':245,'Sat':285,'Sun': 88,'Thu': 120,'Tue':180,'Wed':225}
         self.assertDictEqual(sumSalesN(salesLogN),summedLogN)
+        salesLog1 = [{'ebay':{'Mon':79}},{'craigslist':{'Tue':6}}]
+        summedLog1 = {'Mon': 79, 'Tue': 6}
+        self.assertDictEqual(sumSalesN(salesLog1),summedLog1)
+        self.assertDictEqual(sumSalesN([{}]), {})
 
     def test_searchDicts(self):
         #searchDicts inputs
+        dictList3 = [{"cat":1,"dog":True,"Butch":"found"},{"Butch":2},{"cat":False}]
         dictList = [{"x":1,"y":True,"z":"found"},{"x":2},{"y":False}]
         self.assertEqual(searchDicts(dictList,"x"),2)
         #self.assertEqual(searchDicts(dictList,"y"),False) #this is wrong, it should be True, Searching from the END of a list
         self.assertEqual(searchDicts(dictList,"z"),"found")
         self.assertEqual(searchDicts(dictList,"t"),None)
+        self.assertEqual(searchDicts(dictList3,"cat"),False)
+        self.assertEqual(searchDicts(dictList3,"Frank Ocean"),None)
 
     def test_searchDicts2(self):
         dictList2 = [(0,{"x":0,"y":True,"z":"zero"}), (0,{"x":1}), (1,{"y":False}), (1,{"x":3, "z":"three"}), (2,{})]
+        dictList4 = [(0,{"he":0,"she":True,"y":"yes"}), (1,{"findme":True}), (2,{"infinite":False})]
         self.assertEqual(searchDicts2(dictList2,"x"),1)
         self.assertEqual(searchDicts2(dictList2,"y"),False)
         self.assertEqual(searchDicts2(dictList2,"z"),"zero")
         self.assertEqual(searchDicts2(dictList2,"t"),None)
+
+        self.assertEqual(searchDicts2(dictList4,"findme"),None)
+        self.assertEqual(searchDicts2(dictList4,"infinite"),False)
 
     def test_busStops(self):
         routes = {
@@ -41,10 +59,15 @@ class HW3SampleTests(unittest.TestCase):
         self.assertEqual(busStops(routes,"Bishop"),['Lentil', 'Wheat', 'Silver'])
         self.assertEqual(busStops(routes,"EECS"),[])
 
+        self.assertEqual(busStops(routes,"Grand"), ['Blue'])
+        self.assertEqual(busStops(routes,"Orchard"), ['Lentil', 'Wheat'])
+
     def test_palindromes(self):
         self.assertEqual(palindromes ('cabbbaccab'),['abbba', 'acca', 'baccab', 'bb', 'bbb', 'cabbbac', 'cc'] )
         self.assertEqual(palindromes ('bacdcabdbacdc') ,['abdba', 'acdca', 'bacdcab', 'bdb', 'cabdbac', 'cdc', 'cdcabdbacdc', 'dcabdbacd'])
         self.assertEqual(palindromes ('myracecars')  ,['aceca', 'cec', 'racecar'])
+        self.assertEqual(palindromes('arethereanypalindromesinhere?'), ['ere'])
+        self.assertEqual(palindromes('nope'), [])
 
     class OddsEvens(object):
         def __init__(self,init):
