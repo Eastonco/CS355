@@ -11,7 +11,7 @@ def debug(*s):
 
 # Accepts a dictionary of -> {'str1': {'str2':int}}
 # Returns a single dictionary -> {'str2': ints}
-# sums all entries value index in input dict
+# sums all entries from value index in input dict
 def sumSales(d):
     totalSales = {}
     for sales in d.values():
@@ -34,8 +34,9 @@ def sumSalesN(L):
 # Accepts a list of Dictionaries(L) -> [{"str":val}] and a key(k) "str"
 # Returns the correstponding value to the key if it exists, else: returns None
 def searchDicts(L,k):
-    L.reverse()
-    for dict in L:
+    tmpL = L[:]
+    tmpL.reverse()
+    for dict in tmpL:
         if k in dict:
             return dict.get(k)
     return None
