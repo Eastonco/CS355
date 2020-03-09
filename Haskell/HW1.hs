@@ -2,7 +2,6 @@
 -- Connor Easton 11557902
 -- worked with Zach Barnett
 
-
 module HW1
      where
 
