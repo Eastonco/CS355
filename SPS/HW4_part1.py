@@ -73,16 +73,59 @@ def lookup(name):
 # Make sure to check the operand stack has the correct number of parameters 
 # and types of the parameters are correct.
 def add():
-    pass
+    try:
+        num1 = opstack.pop()
+    except IndexError:
+        print("There are no items in the stack")
+    try:
+        num2 = opstack.pop()
+        opstack.append(num1 + num2)
+    except IndexError:
+        opstack.append(num1)
+        print("There is only one item in the stack")
+    return
 
 def sub():
-    pass
+    try:
+        num1 = opstack.pop()
+    except IndexError:
+        print("There are no items in the stack")
+    try:
+        num2 = opstack.pop()
+        opstack.append(num2 - num1)
+    except IndexError:
+        opstack.append(num1)
+        print("There is only one item in the stack")
+    return
 
 def mul():
-    pass
+    try:
+        num1 = opstack.pop()
+    except IndexError:
+        print("There are no items in the stack")
+    try:
+        num2 = opstack.pop()
+        opstack.append(num2 * num1)
+    except IndexError:
+        opstack.append(num1)
+        print("There is only one item in the stack")
+    return
 
 def eq():
-    pass
+    try:
+        num1 = opstack.pop()
+    except IndexError:
+        print("There are no items in the stack")
+    try:
+        num2 = opstack.pop()
+        if num1 is num2:
+            opstack.append(True)
+        else:
+            opstack.append(False)
+    except IndexError:
+        opstack.append(num1)
+        print("There is only one item in the stack")
+    return
 
 def lt():
     pass
