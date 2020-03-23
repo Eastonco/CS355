@@ -160,13 +160,51 @@ def gt():
     return
 
 def psAnd():
-    pass
+    try:
+        num1 = opstack.pop()
+    except IndexError:
+        print("There are no items in the stack")
+    try:
+        num2 = opstack.pop()
+        if num1 == True and num2 == True:
+            opstack.append(True)
+        else:
+            opstack.append(False)
+    except IndexError:
+        opstack.append(num1)
+        print("There is only one item in the stack")
+    return
 
 def psOr():
-    pass
+    try:
+        val1 = opstack.pop()
+    except IndexError:
+        print("There are no items in the stack")
+    try:
+        val2 = opstack.pop()
+        if val1 == True or val2 == True:
+            opstack.append(True)
+        else:
+            opstack.append(False)
+    except IndexError:
+        opstack.append(val1)
+        print("There is only one item in the stack")
+    return
 
 def psNot():
-    pass
+    try:
+        val1 = opstack.pop()
+    except IndexError:
+        print("There are no items in the stack")
+    if val1 == True or val1 == False:
+        opstack.append((not val1))
+    else:
+        val1 += 1
+        if val1 != 0:
+            val1 = -val1
+        opstack.append(val1)
+    return
+
 
 #--------------------------- 25% -------------------------------------
 # Array operators: define the string operators length, get, getinterval, put, putinterval
