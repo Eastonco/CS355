@@ -1,4 +1,4 @@
-# WRITE YOUR NAME and YOUR COLLABORATORS HERE
+# Connor Easton 11557902
 
 #------------------------- 10% -------------------------------------
 # The operand stack: define the operand stack and its operations
@@ -10,11 +10,17 @@ opstack = []  #assuming top of the stack is the end of the list
 # Recall that `pass` in python is a no-op: replace it with your code.
 
 def opPop():
+    opstack.pop()
     pass
-    # opPop should return the popped value.
+    # opPop should return the opped value.
     # The pop() function should call opPop to pop the top value from the opstack, but it will ignore the popped value.
 
 def opPush(value):
+    try:
+        for num in value:
+            opstack.append(num)
+    except TypeError:
+        opstack.append(value)
     pass
 
 #-------------------------- 20% -------------------------------------
@@ -25,17 +31,22 @@ dictstack = []  #assuming top of the stack is the end of the list
 # define name, and to lookup a name
 
 def dictPop():
+    dictstack.pop()
     pass
     # dictPop pops the top dictionary from the dictionary stack.
 
 def dictPush(d):
+    dictstack.append(d)
     pass
-    #dictPush pushes the dictionary ‘d’ to the dictstack. 
-    #Note that, your interpreter will call dictPush only when Postscript 
-    #“begin” operator is called. “begin” should pop the empty dictionary from 
-    #the opstack and push it onto the dictstack by calling dictPush.
+    # dictPush pushes the dictionary ‘d’ to the dictstack. 
+    # Note that, your interpreter will call dictPush only when Postscript 
+    # “begin” operator is called. “begin” should pop the empty dictionary from 
+    # the opstack and push it onto the dictstack by calling dictPush.
 
 def define(name, value):
+    tmp = dictstack.pop()
+    tmp[name] = value
+    dictPush(tmp)
     pass
     #add name:value pair to the top dictionary in the dictionary stack. 
     #Keep the '/' in the name constant. 
@@ -43,7 +54,16 @@ def define(name, value):
     #call the “define” function.
 
 def lookup(name):
-    pass
+    d = dictstack.pop()
+    dictPush(d)
+
+    searchName = '/' + name
+
+    if d.get(searchName) is None:
+        print("value '", name, "' is not in the dictionary", sep='')
+        return
+    return d.get(searchName)
+    
     # return the value associated with name
     # What is your design decision about what to do when there is no definition for “name”? If “name” is not defined, your program should not break, but should give an appropriate error message.
 
