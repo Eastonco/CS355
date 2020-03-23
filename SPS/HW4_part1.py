@@ -128,7 +128,20 @@ def eq():
     return
 
 def lt():
-    pass
+    try:
+        num1 = opstack.pop()
+    except IndexError:
+        print("There are no items in the stack")
+    try:
+        num2 = opstack.pop()
+        if num1 < num2:
+            opstack.append(True)
+        else:
+            opstack.append(False)
+    except IndexError:
+        opstack.append(num1)
+        print("There is only one item in the stack")
+    return
 
 def gt():
     pass
