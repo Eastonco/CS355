@@ -10,8 +10,8 @@ opstack = []  #assuming top of the stack is the end of the list
 # Recall that `pass` in python is a no-op: replace it with your code.
 
 def opPop():
-    opstack.pop()
-    pass
+    return opstack.pop()
+    
     # opPop should return the opped value.
     # The pop() function should call opPop to pop the top value from the opstack, but it will ignore the popped value.
 
@@ -21,7 +21,6 @@ def opPush(value):
             opstack.append(num)
     except TypeError:
         opstack.append(value)
-    pass
 
 #-------------------------- 20% -------------------------------------
 # The dictionary stack: define the dictionary stack and its operations
@@ -31,20 +30,18 @@ dictstack = []  #assuming top of the stack is the end of the list
 # define name, and to lookup a name
 
 def dictPop():
-    dictstack.pop()
-    pass
+    return dictstack.pop()
     # dictPop pops the top dictionary from the dictionary stack.
 
 def dictPush(d):
     dictstack.append(d)
-    pass
     # dictPush pushes the dictionary ‘d’ to the dictstack. 
     # Note that, your interpreter will call dictPush only when Postscript 
     # “begin” operator is called. “begin” should pop the empty dictionary from 
     # the opstack and push it onto the dictstack by calling dictPush.
 
 def define(name, value):
-    tmp = dictstack.pop()
+    tmp = dictPop()
     tmp[name] = value
     dictPush(tmp)
     pass
@@ -54,15 +51,22 @@ def define(name, value):
     #call the “define” function.
 
 def lookup(name):
-    d = dictstack.pop()
-    dictPush(d)
+    tmplist = []
+    for i in range(len(dictstack)):
+        tmplist.insert(0,dictPop())
+
+    for d in tmplist:
+        dictPush(d)
+    
+    tmplist.reverse()
+
 
     searchName = '/' + name
+    for d in tmplist:
+        if d.get(searchName) is not None:
+            return d.get(searchName)
+    print("No value found")
 
-    if d.get(searchName) is None:
-        print("value '", name, "' is not in the dictionary", sep='')
-        return
-    return d.get(searchName)
     
     # return the value associated with name
     # What is your design decision about what to do when there is no definition for “name”? If “name” is not defined, your program should not break, but should give an appropriate error message.
@@ -73,137 +77,138 @@ def lookup(name):
 # Make sure to check the operand stack has the correct number of parameters 
 # and types of the parameters are correct.
 def add():
-    try:
-        num1 = opstack.pop()
-    except IndexError:
-        print("There are no items in the stack")
-    try:
-        num2 = opstack.pop()
-        opstack.append(num1 + num2)
-    except IndexError:
-        opstack.append(num1)
-        print("There is only one item in the stack")
-    return
+    if len(opstack) > 1:
+        op2 = opPop()
+        op1 = opPop()
+        if(isinstance(op1,int) and isinstance(op2,int)):
+            opPush(op1+op2)
+        else:
+            #print("Error: add - one of the operands is not a numerical value") 
+            opPush(op1)
+            opPush(op2)
+    else:
+        #print("Error: add expects 2 operands")
+        pass
 
 def sub():
-    try:
-        num1 = opstack.pop()
-    except IndexError:
-        print("There are no items in the stack")
-    try:
-        num2 = opstack.pop()
-        opstack.append(num2 - num1)
-    except IndexError:
-        opstack.append(num1)
-        print("There is only one item in the stack")
-    return
+    if len(opstack) > 1: 
+        op2 = opPop()
+        op1 = opPop()
+        if(isinstance(op1,int) and isinstance(op2,int)):
+            opPush(op1 - op2)
+        else:
+            #print("Error: sub - one of the operands is not a numerical value") 
+            opPush(op1)
+            opPush(op2)
+    else:
+        #print("Error: sub expects 2 operands")
+        pass
 
 def mul():
-    try:
-        num1 = opstack.pop()
-    except IndexError:
-        print("There are no items in the stack")
-    try:
-        num2 = opstack.pop()
-        opstack.append(num2 * num1)
-    except IndexError:
-        opstack.append(num1)
-        print("There is only one item in the stack")
-    return
+    if len(opstack) > 1: 
+        op2 = opPop()
+        op1 = opPop()
+        if(isinstance(op1,int) and isinstance(op2,int)):
+            opPush(op2 * op1)
+        else:
+            #print("Error: mul - one of the operands is not a numerical value") 
+            opPush(op1)
+            opPush(op2)
+    else:
+        #print("Error: mul expects 2 operands")
+        pass
 
 def eq():
-    try:
-        num1 = opstack.pop()
-    except IndexError:
-        print("There are no items in the stack")
-    try:
-        num2 = opstack.pop()
-        if num1 is num2:
-            opstack.append(True)
+    if len(opstack) > 1: 
+        op2 = opPop()
+        op1 = opPop()
+        if(op1 is op2):
+            opPush(True)
         else:
-            opstack.append(False)
-    except IndexError:
-        opstack.append(num1)
-        print("There is only one item in the stack")
-    return
+            opPush(False)
+    else:
+        #print("Error: eq expects 2 operands")
+        pass
 
 def lt():
-    try:
-        num1 = opstack.pop()
-    except IndexError:
-        print("There are no items in the stack")
-    try:
-        num2 = opstack.pop()
-        if num1 < num2:
-            opstack.append(True)
+    if len(opstack) > 1: 
+        op2 = opPop()
+        op1 = opPop()
+        if (isinstance(op1,int) and isinstance(op2,int)):
+            if (op1 < op2):
+                opPush(True)
+            else:
+                opPush(False)
         else:
-            opstack.append(False)
-    except IndexError:
-        opstack.append(num1)
-        print("There is only one item in the stack")
-    return
+            #print("Error:  - one of the operands is not a numerical value") 
+            opPush(op1)
+            opPush(op2)
+    else:
+        #print("Error: gt expects 2 operands")
+        pass
+
 
 def gt():
-    try:
-        num1 = opstack.pop()
-    except IndexError:
-        print("There are no items in the stack")
-    try:
-        num2 = opstack.pop()
-        if num1 > num2:
-            opstack.append(True)
+    if len(opstack) > 1: 
+        op2 = opPop()
+        op1 = opPop()
+        if (isinstance(op1,int) and isinstance(op2,int)):
+            if (op1 > op2):
+                opPush(True)
+            else:
+                opPush(False)
         else:
-            opstack.append(False)
-    except IndexError:
-        opstack.append(num1)
-        print("There is only one item in the stack")
-    return
+            #print("Error:  - one of the operands is not a numerical value") 
+            opPush(op1)
+            opPush(op2)
+    else:
+        #print("Error: gt expects 2 operands")
+        pass
 
 def psAnd():
-    try:
-        num1 = opstack.pop()
-    except IndexError:
-        print("There are no items in the stack")
-    try:
-        num2 = opstack.pop()
-        if num1 == True and num2 == True:
-            opstack.append(True)
+    if len(opstack) > 1: 
+        op2 = opPop()
+        op1 = opPop()
+        if (isinstance(op1,bool) and isinstance(op2,bool)):
+            if op1 == True and op2 == True:
+                opPush(True)
+            else:
+                opPush(False)
         else:
-            opstack.append(False)
-    except IndexError:
-        opstack.append(num1)
-        print("There is only one item in the stack")
-    return
+            #print("Error: psAnd - variables are not Boolean") 
+            opPush(op1)
+            opPush(op2)
+    else:
+        #print("Error: psNot expects 2 operands")
+        pass
 
 def psOr():
-    try:
-        val1 = opstack.pop()
-    except IndexError:
-        print("There are no items in the stack")
-    try:
-        val2 = opstack.pop()
-        if val1 == True or val2 == True:
-            opstack.append(True)
+    if len(opstack) > 1: 
+        op2 = opPop()
+        op1 = opPop()
+        if (isinstance(op1,bool) and isinstance(op2,bool)):
+            if op1 == True or op2 == True:
+                opPush(True)
+            else:
+                opPush(False)
         else:
-            opstack.append(False)
-    except IndexError:
-        opstack.append(val1)
-        print("There is only one item in the stack")
-    return
+            #print("Error: psOr - variables are not Boolean") 
+            opPush(op1)
+            opPush(op2)
+    else:
+        #print("Error: psNot expects 2 operands")
+        pass
 
 def psNot():
-    try:
-        val1 = opstack.pop()
-    except IndexError:
-        print("There are no items in the stack")
-    if val1 == True or val1 == False:
-        opstack.append((not val1))
+    if len(opstack) > 0: 
+        op1 = opPop()
+        if (isinstance(op1,bool)):
+                opPush(not op1)
+        elif (isinstance(op1,int)):
+            opPush(-op1)
     else:
-        val1 += 1
-        if val1 != 0:
-            val1 = -val1
-        opstack.append(val1)
-    return
+        #print("Error: psNot expects 1 operand")
+        pass
 
 
 #--------------------------- 25% -------------------------------------
@@ -224,7 +229,7 @@ def putinterval():
     pass
 
 #--------------------------- 15% -------------------------------------
-# Define the stack manipulation and print operators: dup, copy, count, pop, clear, exch, mark, cleartomark, counttotmark
+# Define the stack manipulation and #print operators: dup, copy, count, pop, clear, exch, mark, cleartomark, counttotmark
 def dup():
     pass
 
