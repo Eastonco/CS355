@@ -28,7 +28,8 @@ def opPush(value):
         opstack.append(value)
 
 def cleanOp():
-    if(('[' in opstack) and (']' in opstack))
+    pass
+    #if(('[' in opstack) and (']' in opstack))
 
 #-------------------------- 20% -------------------------------------
 # The dictionary stack: define the dictionary stack and its operations
@@ -245,20 +246,30 @@ def dup():
     opPush(val)
 
 def copy():
-
+    count = opPop()
+    opStackCopy = opstack[:]
+    if count < len(opStackCopy):
+        while count > 0:
+            opPush(opStackCopy[-count])
+            count -= 1
+    else:
+        opPush(count)
+        print("Error: copy count is larger than list")
 
 def count():
-    opPush(opstack.count())
+    opPush(len(opstack))
 
 
-def pop():
-    opPop()
+def pop(): # What does this do?
+    pass
 
 def clear():
-    opstack = []
+    opstack.clear()
 
 def exch():
-    pass
+    tmp = opstack[-1]
+    opstack[-1] = opstack[-2]
+    opstack[-2] = tmp
 
 def mark():
     opPush('-mark-')
