@@ -41,31 +41,31 @@ def dictPush(d):
     # the opstack and push it onto the dictstack by calling dictPush.
 
 def define(name, value):
-    tmp = dictPop()
-    tmp[name] = value
-    dictPush(tmp)
-    pass
+    try:
+        tmp = dictPop()
+        tmp[name] = value
+        dictPush(tmp)
+    except IndexError:
+        print("No dictionaries in stack")
     #add name:value pair to the top dictionary in the dictionary stack. 
     #Keep the '/' in the name constant. 
     #Your psDef function should pop the name and value from operand stack and 
     #call the “define” function.
 
 def lookup(name):
-    tmplist = []
-    for i in range(len(dictstack)):
-        tmplist.insert(0,dictPop())
 
-    for d in tmplist:
-        dictPush(d)
-    
-    tmplist.reverse()
-
+    dictstack.reverse()
 
     searchName = '/' + name
-    for d in tmplist:
+    for d in dictstack:
         if d.get(searchName) is not None:
-            return d.get(searchName)
-    print("No value found")
+            val = d.get(searchName)
+    
+    dictstack.reverse()
+    try:
+        return val
+    except:
+        print("No value found")
 
     
     # return the value associated with name
@@ -249,6 +249,7 @@ def exch():
     pass
 
 def mark():
+    opPush("-mark-")
     pass
 
 def cleartomark():
@@ -258,7 +259,10 @@ def counttomark():
     pass
 
 def stack():
-    pass
+    opstack.reverse()
+    for val in opstack:
+        print(val)
+    opstack.reverse()
 
 #--------------------------- 20% -------------------------------------
 # Define the dictionary manipulation operators: psDict, begin, end, psDef
