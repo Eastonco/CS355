@@ -17,10 +17,18 @@ def opPop():
 
 def opPush(value):
     try:
-        for num in value:
-            opstack.append(num)
+        if(not isinstance(value,str)):
+            for num in value:
+                opstack.append(num)
+        else:
+            opstack.append(value)
+        if (d == ']'):
+            cleanOp()
     except TypeError:
         opstack.append(value)
+
+def cleanOp():
+    if(('[' in opstack) and (']' in opstack))
 
 #-------------------------- 20% -------------------------------------
 # The dictionary stack: define the dictionary stack and its operations
@@ -39,6 +47,7 @@ def dictPush(d):
     # Note that, your interpreter will call dictPush only when Postscript 
     # “begin” operator is called. “begin” should pop the empty dictionary from 
     # the opstack and push it onto the dictstack by calling dictPush.
+
 
 def define(name, value):
     try:
@@ -231,29 +240,37 @@ def putinterval():
 #--------------------------- 15% -------------------------------------
 # Define the stack manipulation and #print operators: dup, copy, count, pop, clear, exch, mark, cleartomark, counttotmark
 def dup():
-    pass
+    val = opPop()
+    opPush(val)
+    opPush(val)
 
 def copy():
-    pass
+
 
 def count():
-    pass
+    opPush(opstack.count())
+
 
 def pop():
-    pass
+    opPop()
 
 def clear():
-    pass
+    opstack = []
 
 def exch():
     pass
 
 def mark():
-    opPush("-mark-")
+    opPush('-mark-')
     pass
 
 def cleartomark():
-    pass
+    val = None
+    try:
+        while val != "-mark-":
+            val = opPop()
+    except IndexError:
+        pass
 
 def counttomark():
     pass
