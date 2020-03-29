@@ -63,15 +63,12 @@ def define(name, value):
     #call the “define” function.
 
 def lookup(name):
-
     dictstack.reverse()
-
     searchName = '/' + name
     for d in dictstack:
         if d.get(searchName) is not None:
             val = d.get(searchName)
             break
-    
     dictstack.reverse()
     try:
         return val
@@ -372,7 +369,6 @@ def end():
 def psDef():
     val1 = opPop()
     val2 = opPop()
-
     if isinstance(val1, str):
         define(val1, val2)
     elif isinstance(val2, str):
