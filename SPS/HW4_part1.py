@@ -16,20 +16,17 @@ def opPop():
     # The pop() function should call opPop to pop the top value from the opstack, but it will ignore the popped value.
 
 def opPush(value):
-    try:
-        if(not isinstance(value,str)):
-            for num in value:
-                opstack.append(num)
+    if (value == '['):
+        opstack.append('-mark-')
+    elif (value == ']'):
+        opstack.append(cleartomark())
+    elif (isinstance(value,str)) and (value[0] != '/'):
+        if(value != "-mark-"):
+            opstack.append(lookup(value))
         else:
-            opstack.append(value)
-        if (d == ']'):
-            cleanOp()
-    except TypeError:
+            opstack.append("-mark-")
+    else:
         opstack.append(value)
-
-def cleanOp():
-    pass
-    #if(('[' in opstack) and (']' in opstack))
 
 #-------------------------- 20% -------------------------------------
 # The dictionary stack: define the dictionary stack and its operations
@@ -52,11 +49,14 @@ def dictPush(d):
 
 def define(name, value):
     try:
-        tmp = dictPop()
-        tmp[name] = value
-        dictPush(tmp)
+        mydict = dictPop()
+        mydict[name] = value
+        dictPush(mydict)
     except IndexError:
-        print("No dictionaries in stack")
+        dictPush({})
+        mydict = dictPop()
+        mydict[name] = value
+        dictPush(mydict)
     #add name:value pair to the top dictionary in the dictionary stack. 
     #Keep the '/' in the name constant. 
     #Your psDef function should pop the name and value from operand stack and 
@@ -70,6 +70,7 @@ def lookup(name):
     for d in dictstack:
         if d.get(searchName) is not None:
             val = d.get(searchName)
+            break
     
     dictstack.reverse()
     try:
@@ -97,8 +98,7 @@ def add():
             opPush(op1)
             opPush(op2)
     else:
-        #print("Error: add expects 2 operands")
-        pass
+        print("Error: add expects 2 operands")
 
 def sub():
     if len(opstack) > 1: 
@@ -111,8 +111,8 @@ def sub():
             opPush(op1)
             opPush(op2)
     else:
-        #print("Error: sub expects 2 operands")
-        pass
+        print("Error: sub expects 2 operands")
+        
 
 def mul():
     if len(opstack) > 1: 
@@ -125,8 +125,8 @@ def mul():
             opPush(op1)
             opPush(op2)
     else:
-        #print("Error: mul expects 2 operands")
-        pass
+        print("Error: mul expects 2 operands")
+        
 
 def eq():
     if len(opstack) > 1: 
@@ -137,8 +137,7 @@ def eq():
         else:
             opPush(False)
     else:
-        #print("Error: eq expects 2 operands")
-        pass
+        print("Error: eq expects 2 operands")
 
 def lt():
     if len(opstack) > 1: 
@@ -154,8 +153,7 @@ def lt():
             opPush(op1)
             opPush(op2)
     else:
-        #print("Error: gt expects 2 operands")
-        pass
+        print("Error: gt expects 2 operands")
 
 
 def gt():
@@ -172,8 +170,7 @@ def gt():
             opPush(op1)
             opPush(op2)
     else:
-        #print("Error: gt expects 2 operands")
-        pass
+        print("Error: gt expects 2 operands")
 
 def psAnd():
     if len(opstack) > 1: 
@@ -189,8 +186,7 @@ def psAnd():
             opPush(op1)
             opPush(op2)
     else:
-        #print("Error: psNot expects 2 operands")
-        pass
+        print("Error: psNot expects 2 operands")
 
 def psOr():
     if len(opstack) > 1: 
@@ -206,8 +202,7 @@ def psOr():
             opPush(op1)
             opPush(op2)
     else:
-        #print("Error: psNot expects 2 operands")
-        pass
+        print("Error: psNot expects 2 operands")
 
 def psNot():
     if len(opstack) > 0: 
@@ -217,26 +212,70 @@ def psNot():
         elif (isinstance(op1,int)):
             opPush(-op1)
     else:
-        #print("Error: psNot expects 1 operand")
-        pass
+        print("Error: psNot expects 1 operand")
 
 
 #--------------------------- 25% -------------------------------------
 # Array operators: define the string operators length, get, getinterval, put, putinterval
-def length():
-    pass
+def length(): # pops an array from stack, returns it's length
+    val = opPop()
+    if type(val) is list:
+        opPush(len(val))
+    else:
+        print("Value not a list")
 
-def get():
-    pass
+def get(): # <array> <index> get(), get value at index and push to stack
+    index = opPop()
+    arr = opPop()
+    if (type(arr) is list) and (type(index) is int):
+        try:
+            opPush(arr[index])
+        except IndexError:
+            print("Index out of range in array")
+    else:
+        print("types are not list and int")
 
-def getinterval():
-    pass
+def getinterval(): # <array> <index> <count> getinterval()
+    count = opPop()
+    index = opPop()
+    arr = opPop()
 
-def put():
-    pass
+    if (type(arr) is list) and (type(index) is int):
+        l = []
+        try:
+            for i in range(count):
+               l.append(arr[index + i])
+        except IndexError:
+            print("index out of range")
+        print(l)
+        opPush(l)
+    else:
+        print("types are not list and int")
+
+
+def put(): # <array> <index> <value> put(), repalces a value in an array
+    val = opPop()
+    index = opPop()
+    arr = opPop()
+    if(type(arr) is list) and (type(index) is int):
+        try:
+            arr[index] = val
+        except IndexError:
+            print("Index out of range in array")
+    else:
+        print("types are not list and int")
 
 def putinterval():
-    pass
+    arr2 = opPop()
+    index = opPop()
+    arr1 = opPop()
+    if(type(arr1) is list) and (type(index) is int) and (type(arr2) is list):
+        try:
+            arr1[index:(len(arr2) + index)] = arr2[:]
+        except IndexError:
+            print("Index out of range in array")
+    else:
+        print("types are not list and int")
 
 #--------------------------- 15% -------------------------------------
 # Define the stack manipulation and #print operators: dup, copy, count, pop, clear, exch, mark, cleartomark, counttotmark
@@ -260,8 +299,8 @@ def count():
     opPush(len(opstack))
 
 
-def pop(): # What does this do?
-    pass
+def pop(): 
+    return opPop()
 
 def clear():
     opstack.clear()
@@ -272,19 +311,33 @@ def exch():
     opstack[-2] = tmp
 
 def mark():
-    opPush('-mark-')
-    pass
+    opPush("-mark-")
 
 def cleartomark():
-    val = None
-    try:
+    if "-mark-" in opstack:
+        l = []
+        val = None
         while val != "-mark-":
-            val = opPop()
-    except IndexError:
-        pass
+            l.append(opPop())
+            val = l[-1]
+        return l
+    else:
+        print("No -mark- ins stack")
 
 def counttomark():
-    pass
+    if "-mark-" in opstack:
+        count = 0
+        opstack.reverse()
+        for val in opstack:
+            if val == "-mark-":
+                break
+            else:
+                count += 1
+        opstack.reverse()
+        opPush(count)
+    else:
+        print("Error: counttomark() - no mark in stack")
+
 
 def stack():
     opstack.reverse()
@@ -299,13 +352,32 @@ def stack():
 # Note that psDef()won't have any parameters.
 
 def psDict():
-    pass
+    opPop()
+    opPush({})
 
 def begin():
-    pass
+    newdict = opPop()
+    if type(newdict) is dict:
+        dictPush(newdict)
+    else:
+        opPush(newdict)
+        print("Error: begin - popped val is not dict")
 
 def end():
-    pass
+    try:
+        dictPop()
+    except IndexError:
+        print("ERROR: end() - no dicts to pop")
 
 def psDef():
-    pass
+    val1 = opPop()
+    val2 = opPop()
+
+    if isinstance(val1, str):
+        define(val1, val2)
+    elif isinstance(val2, str):
+        define(val2, val1)
+    else:
+        opPush(val2)
+        opPush(val1)
+        print("Error: psDef() - No variable and value pair")

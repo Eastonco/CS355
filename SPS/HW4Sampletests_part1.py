@@ -228,6 +228,7 @@ class HW4Sampletests_part1(unittest.TestCase):
         opPush([3,5,5,True,4])
         opPush(3)
         get()
+        stack()
         self.assertEqual(opPop(),True)
         self.assertTrue(len(opstack)==0)
     
@@ -356,7 +357,7 @@ class HW4Sampletests_part1(unittest.TestCase):
     # def test_divInputs(self):
     #     opPush(10)
     #     opPush("/x")
-    #     div()
+    #     div() # This isn't a valid command
     #     print(opstack)
 
     # # Make sure that the following test prints/raises an error message about the type of the first argument (the variable name needs be a string)
