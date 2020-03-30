@@ -1,5 +1,4 @@
 # Connor Easton 11557902
-
 #------------------------- 10% -------------------------------------
 # The operand stack: define the operand stack and its operations
 opstack = []  #assuming top of the stack is the end of the list
