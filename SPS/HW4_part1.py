@@ -56,7 +56,7 @@ def define(name, value):
         mydict = dictPop()
         mydict[name] = value
         dictPush(mydict)
-    #add name:value pair to the top dictionary in the dictionary stack. 
+    # add name:value pair to the top dictionary in the dictionary stack. 
     #Keep the '/' in the name constant. 
     #Your psDef function should pop the name and value from operand stack and 
     #call the “define” function.
