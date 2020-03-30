@@ -62,6 +62,18 @@ def clearStacks():
     opstack[:] = []
     dictstack[:] = []
 
+def psIf():
+    pass
+
+def psIfelse():
+    pass
+
+def psRepeat():
+    pass
+
+def forall():
+    pass
+
 
 input1 = """
             /square {dup mul} def
