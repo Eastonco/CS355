@@ -219,6 +219,7 @@ def length(): # pops an array from stack, returns it's length
     if type(val) is list:
         opPush(len(val))
     else:
+        opPush(val)
         print("Value not a list")
 
 def get(): # <array> <index> get(), get value at index and push to stack
@@ -230,6 +231,8 @@ def get(): # <array> <index> get(), get value at index and push to stack
         except IndexError:
             print("Index out of range in array")
     else:
+        opPush(arr)
+        opPush(index)
         print("types are not list and int")
 
 def getinterval(): # <array> <index> <count> getinterval()
@@ -247,6 +250,9 @@ def getinterval(): # <array> <index> <count> getinterval()
         print(l)
         opPush(l)
     else:
+        opPush(arr)
+        opPush(index)
+        opPush(count)
         print("types are not list and int")
 
 
@@ -260,6 +266,9 @@ def put(): # <array> <index> <value> put(), repalces a value in an array
         except IndexError:
             print("Index out of range in array")
     else:
+        opPush(arr)
+        opPush(index)
+        opPush(val)
         print("types are not list and int")
 
 def putinterval():
@@ -272,6 +281,9 @@ def putinterval():
         except IndexError:
             print("Index out of range in array")
     else:
+        opPush(arr1)
+        opPush(index)
+        opPush(arr2)
         print("types are not list and int")
 
 #--------------------------- 15% -------------------------------------
@@ -337,10 +349,11 @@ def counttomark():
 
 
 def stack():
-    opstack.reverse()
-    for val in opstack:
-        print(val)
-    opstack.reverse()
+    if(opstack > 0):
+        opstack.reverse()
+        for val in opstack:
+            print(val)
+        opstack.reverse()
 
 #--------------------------- 20% -------------------------------------
 # Define the dictionary manipulation operators: psDict, begin, end, psDef
@@ -349,16 +362,21 @@ def stack():
 # Note that psDef()won't have any parameters.
 
 def psDict():
-    opPop()
-    opPush({})
+    if opstack > 0:
+        val = opPop()
+        if(isinstance(val, int)):
+            opPush({})
+        else:
+            opPush(val)
 
 def begin():
-    newdict = opPop()
-    if type(newdict) is dict:
-        dictPush(newdict)
-    else:
-        opPush(newdict)
-        print("Error: begin - popped val is not dict")
+    if opstack > 0:
+        newdict = opPop()
+        if type(newdict) is dict:
+            dictPush(newdict)
+        else:
+            opPush(newdict)
+            print("Error: begin - popped val is not dict")
 
 def end():
     try:
@@ -367,13 +385,14 @@ def end():
         print("ERROR: end() - no dicts to pop")
 
 def psDef():
-    val1 = opPop()
-    val2 = opPop()
-    if isinstance(val1, str):
-        define(val1, val2)
-    elif isinstance(val2, str):
-        define(val2, val1)
-    else:
-        opPush(val2)
-        opPush(val1)
-        print("Error: psDef() - No variable and value pair")
+    if opstack > 1:
+        val1 = opPop()
+        val2 = opPop()
+        if isinstance(val1, str):
+            define(val1, val2)
+        elif isinstance(val2, str):
+            define(val2, val1)
+        else:
+            opPush(val2)
+            opPush(val1)
+            print("Error: psDef() - No variable and value pair")
