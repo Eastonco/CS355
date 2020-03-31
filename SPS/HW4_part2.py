@@ -26,6 +26,31 @@ def groupMatch(it):
             res.append(c)
     return False
 
+def listMatch(L):
+    l = []
+    item = ''
+    for i in range(len(L)):
+        if i == 0:
+            continue
+        elif L[i] == ']':
+            try:
+                l.append(int(item))
+            except:
+                l.append(item)
+            return l
+        elif L[i] == '[':
+            l.append(listMatch(i)) # this won't work
+        elif L[i] == ' ':
+            try:
+                l.append(int(item))
+                item = ''
+            except:
+                l.append(item)
+                item = ''
+        else:
+            item += L[i]
+            
+    return False
 
 
 # COMPLETE THIS FUNCTION
@@ -39,10 +64,19 @@ def parse(L):
         if c=='}':  #non matching closing parenthesis; return false since there is 
                     # a syntax error in the Postscript code.
             return False
+        elif c == 'true':
+            res.append(True)
+        elif c == 'false':
+            res.append(False)
         elif c=='{':
             res.append(groupMatch(it))
+        elif c[0] == '[':
+            res.append(listMatch(c))
         else:
-            res.append(c)
+            try:
+                res.append(int(c))
+            except:
+                res.append(c)
     return {'codearray':res}
 
 # COMPLETE THIS FUNCTION 
@@ -52,12 +86,12 @@ def parse(L):
 def interpretSPS(code): # code is a code array
     commandlist = code.get('codearray')
     for command in commandlist:
-        if(isinstance(command, int) or isinstance(command, list) or isinstance(command, dict)):
+        if(isinstance(command, int) or isinstance(command, list) or isinstance(command, dict) or isinstance(command, bool)):
             opPush(command)
         elif (isinstance(command, str)):
-            if(command == 'true'):
+            if(command == True):
                 opPush(True)
-            elif(command == 'false'):
+            elif(command == False):
                 opPush(False)
             else:
                 try:
@@ -65,6 +99,35 @@ def interpretSPS(code): # code is a code array
                 except:
                     opPush(command)
 
+
+def interpreter(s): # s is a string
+    interpretSPS(parse(tokenize(s)))
+
+#clear opstack and dictstack
+def clearStacks():
+    opstack[:] = []
+    dictstack[:] = []
+
+def psIf():
+    pass
+
+def psIfelse():
+    pass
+
+def psRepeat():
+    pass
+
+def forall():
+    if len(opstack) > 1:
+        func = opPop()
+        arr = opPop()
+        for val in arr:
+            opPush(val)
+        parsed = parse(tokenize(func))
+        for i in range(len(arr)):
+            interpretSPS(parsed)
+    
+    
 commanddict = {
     'add' : add,
     'sub' : sub,
@@ -96,32 +159,10 @@ commanddict = {
     'dict' : psDict,
     'begin' : begin,
     'end' : end,
-    'def' : psDef
+    'def' : psDef,
+
+    'forall' : forall
     }
-
-
-
-def interpreter(s): # s is a string
-    interpretSPS(parse(tokenize(s)))
-
-
-#clear opstack and dictstack
-def clearStacks():
-    opstack[:] = []
-    dictstack[:] = []
-
-def psIf():
-    pass
-
-def psIfelse():
-    pass
-
-def psRepeat():
-    pass
-
-def forall():
-    pass
-
 
 
 
@@ -136,6 +177,7 @@ input1 = """
 # print(parse(tokenize(input1)))
 print(parse(['b', 'c', '{', 'a', '{', 'a', 'b', '}', '{', '{', 'e', '}', 'a', '}', '}']))
 
+print(parse(tokenize(input1)))
 interpreter(input1)
 
 
