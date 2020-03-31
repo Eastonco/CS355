@@ -348,7 +348,7 @@ def counttomark():
 
 
 def stack():
-    if(opstack > 0):
+    if len(opstack) > 0:
         opstack.reverse()
         for val in opstack:
             print(val)
@@ -361,7 +361,7 @@ def stack():
 # Note that psDef()won't have any parameters.
 
 def psDict():
-    if opstack > 0:
+    if len(opstack) > 0:
         val = opPop()
         if(isinstance(val, int)):
             opPush({})
@@ -369,7 +369,7 @@ def psDict():
             opPush(val)
 
 def begin():
-    if opstack > 0:
+    if len(opstack) > 0:
         newdict = opPop()
         if type(newdict) is dict:
             dictPush(newdict)
@@ -384,7 +384,7 @@ def end():
         print("ERROR: end() - no dicts to pop")
 
 def psDef():
-    if opstack > 1:
+    if len(opstack) > 1:
         val1 = opPop()
         val2 = opPop()
         if isinstance(val1, str):

@@ -16,12 +16,12 @@ def groupMatch(it):
         if c == '}':
             return {'codearray':res}
         elif c=='{':
+            res.append(groupMatch(it))
             # Note how we use a recursive call to group the tokens inside the
             # inner matching parenthesis.
             # Once the recursive call returns the code-array for the inner 
             # parenthesis, it will be appended to the list we are constructing 
             # as a whole.
-            res.append(groupMatch(it))
         else:
             res.append(c)
     return False
@@ -50,7 +50,55 @@ def parse(L):
 # but it will have a very regular and obvious structure if you've followed the plan of the assignment.
 # Write additional auxiliary functions if you need them. 
 def interpretSPS(code): # code is a code array
-    pass
+    commandlist = code.get('codearray')
+    for command in commandlist:
+        if(isinstance(command, int) or isinstance(command, list) or isinstance(command, dict)):
+            opPush(command)
+        elif (isinstance(command, str)):
+            if(command == 'true'):
+                opPush(True)
+            elif(command == 'false'):
+                opPush(False)
+            else:
+                try:
+                    commanddict[command]()
+                except:
+                    opPush(command)
+
+commanddict = {
+    'add' : add,
+    'sub' : sub,
+    'mul' : mul,
+    'lt' : lt,
+    'gt' : gt,
+    'and' : psAnd,
+    'or' : psOr,
+    'eq' : eq,
+    'not' : psNot,
+    'length' : length,
+
+    'get' : get,
+    'getinterval' : getinterval,
+    'put' : put,
+    'putinterval' : putinterval,
+
+    'dup' : dup,
+    'copy' : copy,
+    'count' : count,
+    'pop' : pop,
+    'clear' : clear,
+    'exch' : exch,
+    'mark' : mark,
+    'cleartomark' : cleartomark,
+    'counttomark' : counttomark,
+    'stack' : stack,
+
+    'dict' : psDict,
+    'begin' : begin,
+    'end' : end,
+    'def' : psDef
+    }
+
 
 
 def interpreter(s): # s is a string
@@ -75,6 +123,8 @@ def forall():
     pass
 
 
+
+
 input1 = """
             /square {dup mul} def
             0 [-5 -4 3 -2 1]
@@ -85,4 +135,7 @@ input1 = """
 # print(tokenize(input1))
 # print(parse(tokenize(input1)))
 print(parse(['b', 'c', '{', 'a', '{', 'a', 'b', '}', '{', '{', 'e', '}', 'a', '}', '}']))
+
+interpreter(input1)
+
 
