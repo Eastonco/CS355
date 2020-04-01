@@ -21,14 +21,10 @@ def opPush(value):
         opstack.append(cleartomark())
     elif (isinstance(value,str)) and (value[0] != '/'):
         if(value != "-mark-"):
-            d = lookup(value)
-            # if ('codearray' in d):
-
-                                # what do i do??
-            opstack.append(d)
+            opstack.append(lookup(value))
         else:
             opstack.append("-mark-")
-    elif (isinstance(value, list)):
+    else:
         opstack.append(value)
 
 #-------------------------- 20% -------------------------------------
@@ -94,7 +90,7 @@ def add():
         if(isinstance(op1,int) and isinstance(op2,int)):
             opPush(op1+op2)
         else:
-            #print("Error: add - one of the operands is not a numerical value") 
+            print("Error: add - one of the operands is not a numerical value") 
             opPush(op1)
             opPush(op2)
     else:
@@ -107,7 +103,7 @@ def sub():
         if(isinstance(op1,int) and isinstance(op2,int)):
             opPush(op1 - op2)
         else:
-            #print("Error: sub - one of the operands is not a numerical value") 
+            print("Error: sub - one of the operands is not a numerical value") 
             opPush(op1)
             opPush(op2)
     else:
@@ -121,7 +117,7 @@ def mul():
         if(isinstance(op1,int) and isinstance(op2,int)):
             opPush(op2 * op1)
         else:
-            #print("Error: mul - one of the operands is not a numerical value") 
+            print("Error: mul - one of the operands is not a numerical value") 
             opPush(op1)
             opPush(op2)
     else:
@@ -149,7 +145,7 @@ def lt():
             else:
                 opPush(False)
         else:
-            #print("Error:  - one of the operands is not a numerical value") 
+            print("Error:  - one of the operands is not a numerical value") 
             opPush(op1)
             opPush(op2)
     else:
@@ -166,7 +162,7 @@ def gt():
             else:
                 opPush(False)
         else:
-            #print("Error:  - one of the operands is not a numerical value") 
+            print("Error:  - one of the operands is not a numerical value") 
             opPush(op1)
             opPush(op2)
     else:
@@ -182,7 +178,7 @@ def psAnd():
             else:
                 opPush(False)
         else:
-            #print("Error: psAnd - variables are not Boolean") 
+            print("Error: psAnd - variables are not Boolean") 
             opPush(op1)
             opPush(op2)
     else:
@@ -198,7 +194,7 @@ def psOr():
             else:
                 opPush(False)
         else:
-            #print("Error: psOr - variables are not Boolean") 
+            print("Error: psOr - variables are not Boolean") 
             opPush(op1)
             opPush(op2)
     else:
