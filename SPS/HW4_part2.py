@@ -1,4 +1,5 @@
 import re
+import copy
 from HW4_part1 import *
 
 def tokenize(s):
@@ -122,14 +123,43 @@ def clearStacks():
     opstack[:] = []
     dictstack[:] = []
 
-def psIf():
-    pass
+def psIf(): #<Bool> <code> psIf()
+    code = opPop()
+    isTrue = opPop()
+    if isinstance(isTrue, bool) and isinstance(code, dict) and ('codearray' in code):
+        if(isTrue):
+            interpretSPS(code)
+    else:
+        opPush(isTrue)
+        opPush(code)
+        print("Error: psIf() expects a code block and a boolean")
 
-def psIfelse():
-    pass
+def psIfelse(): # <Bool> <code if true> <code if false> psIfelse()
+    falseCode = opPop()
+    trueCode = opPop()
+    isTrue = opPop()
+    if isinstance(isTrue, bool) and isinstance(trueCode, dict) and ('codearray' in trueCode) and isinstance(falseCode, dict) and ('codearray' in falseCode):
+        if(isTrue):
+            interpretSPS(trueCode)
+        else:
+            interpretSPS(falseCode)
+    else:
+        opPush(isTrue)
+        opPush(trueCode)
+        opPush(falseCode)
+        print("Error: psIfelse() expects two code blocks and a boolean")
+    
 
-def psRepeat():
-    pass
+def psRepeat(): #<count> <code array> psRepeat()
+    code = opPop()
+    count = opPop()
+    if isinstance(count, int) and isinstance(code, dict) and ('codearray' in code):
+        for i in range(count):
+            interpretSPS(code)
+    else:
+        opPush(count)
+        opPush(code)
+        print("Error: psRepeat() expects a code block and an int")
 
 def forall(): #<array> <code array> forall() # one at a time
     if len(opstack) > 1:
@@ -145,7 +175,7 @@ def evaluateList(list):
     opstack[:] = []
     interpretSPS({'codearray':list})
     eList = opstack[:]
-    opstack = opStackCopy[:]
+    opstack[:] = opStackCopy[:]
     return eList
 
 commanddict = {
@@ -197,4 +227,5 @@ input1 = """
 # print(parse(tokenize(input1)))
 print(parse(['b', 'c', '{', 'a', '{', 'a', 'b', '}', '{', '{', 'e', '}', 'a', '}', '}']))
 
-interpreter(input1)
+
+
