@@ -41,12 +41,19 @@ def listMatch(L):
         elif L[i] == '[':
             l.append(listMatch(i)) # this won't work
         elif L[i] == ' ':
-            try:
-                l.append(int(item))
+            if item == 'true' :
+                l.append(True)
                 item = ''
-            except:
-                l.append(item)
+            elif item == 'false':
+                l.append(False)
                 item = ''
+            else:
+                try:
+                    l.append(int(item))
+                    item = ''
+                except:
+                    l.append(item)
+                    item = ''
         else:
             item += L[i]
             
@@ -86,18 +93,25 @@ def parse(L):
 def interpretSPS(code): # code is a code array
     commandlist = code.get('codearray')
     for command in commandlist:
-        if(isinstance(command, int) or isinstance(command, list) or isinstance(command, dict) or isinstance(command, bool)):
+        if isinstance(command, dict) or isinstance(command, int) or isinstance(command, bool):
             opPush(command)
+        elif isinstance(command, list):   
+            opPush(evaluateList(command)) # ToDo Implement
         elif (isinstance(command, str)):
-            if(command == True):
-                opPush(True)
-            elif(command == False):
-                opPush(False)
+            if(command[0] == '/'):
+                opPush(command)
+            elif command in commanddict:
+                commanddict[command]()
             else:
-                try:
-                    commanddict[command]()
-                except:
-                    opPush(command)
+                val = lookup(command)
+                if isinstance(val, dict):
+                    interpretSPS(val)
+                elif val is not None:
+                    opPush(val)
+                else:
+                    print("ERROR: Unhandeled command")
+        else: 
+            print("ERROR: Unhandeled command")
 
 
 def interpreter(s): # s is a string
@@ -117,17 +131,23 @@ def psIfelse():
 def psRepeat():
     pass
 
-def forall():
+def forall(): #<array> <code array> forall() # one at a time
     if len(opstack) > 1:
-        func = opPop()
+        codeArr = opPop()
         arr = opPop()
         for val in arr:
             opPush(val)
-        parsed = parse(tokenize(func))
-        for i in range(len(arr)):
-            interpretSPS(parsed)
-    
-    
+            interpretSPS(codeArr)
+
+def evaluateList(list):
+    global opstack
+    opStackCopy = opstack[:]
+    opstack[:] = []
+    interpretSPS({'codearray':list})
+    eList = opstack[:]
+    opstack = opStackCopy[:]
+    return eList
+
 commanddict = {
     'add' : add,
     'sub' : sub,
@@ -168,7 +188,7 @@ commanddict = {
 
 input1 = """
             /square {dup mul} def
-            0 [-5 -4 3 -2 1]
+            0 [2 3 add -4 3 -2 1]
             {square add} forall
             55 eq false and
         """
@@ -177,7 +197,4 @@ input1 = """
 # print(parse(tokenize(input1)))
 print(parse(['b', 'c', '{', 'a', '{', 'a', 'b', '}', '{', '{', 'e', '}', 'a', '}', '}']))
 
-print(parse(tokenize(input1)))
 interpreter(input1)
-
-
