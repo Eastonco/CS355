@@ -21,10 +21,14 @@ def opPush(value):
         opstack.append(cleartomark())
     elif (isinstance(value,str)) and (value[0] != '/'):
         if(value != "-mark-"):
-            opstack.append(lookup(value))
+            d = lookup(value)
+            # if ('codearray' in d):
+
+                                # what do i do??
+            opstack.append(d)
         else:
             opstack.append("-mark-")
-    else:
+    elif (isinstance(value, list)):
         opstack.append(value)
 
 #-------------------------- 20% -------------------------------------
