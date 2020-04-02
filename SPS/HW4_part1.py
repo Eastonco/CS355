@@ -246,7 +246,6 @@ def getinterval(): # <array> <index> <count> getinterval()
                l.append(arr[index + i])
         except IndexError:
             print("index out of range")
-        print(l)
         opPush(l)
     else:
         opPush(arr)
@@ -295,7 +294,7 @@ def dup():
 def copy():
     count = opPop()
     opStackCopy = opstack[:]
-    if count < len(opStackCopy):
+    if count <= len(opStackCopy):
         while count > 0:
             opPush(opStackCopy[-count])
             count -= 1
