@@ -56,7 +56,7 @@ def define(name, value):
         mydict = dictPop()
         mydict[name] = value
         dictPush(mydict)
-    #add name:value pair to the top dictionary in the dictionary stack. 
+    # add name:value pair to the top dictionary in the dictionary stack. 
     #Keep the '/' in the name constant. 
     #Your psDef function should pop the name and value from operand stack and 
     #call the “define” function.
@@ -90,7 +90,7 @@ def add():
         if(isinstance(op1,int) and isinstance(op2,int)):
             opPush(op1+op2)
         else:
-            #print("Error: add - one of the operands is not a numerical value") 
+            print("Error: add - one of the operands is not a numerical value") 
             opPush(op1)
             opPush(op2)
     else:
@@ -103,7 +103,7 @@ def sub():
         if(isinstance(op1,int) and isinstance(op2,int)):
             opPush(op1 - op2)
         else:
-            #print("Error: sub - one of the operands is not a numerical value") 
+            print("Error: sub - one of the operands is not a numerical value") 
             opPush(op1)
             opPush(op2)
     else:
@@ -117,7 +117,7 @@ def mul():
         if(isinstance(op1,int) and isinstance(op2,int)):
             opPush(op2 * op1)
         else:
-            #print("Error: mul - one of the operands is not a numerical value") 
+            print("Error: mul - one of the operands is not a numerical value") 
             opPush(op1)
             opPush(op2)
     else:
@@ -145,7 +145,7 @@ def lt():
             else:
                 opPush(False)
         else:
-            #print("Error:  - one of the operands is not a numerical value") 
+            print("Error:  - one of the operands is not a numerical value") 
             opPush(op1)
             opPush(op2)
     else:
@@ -162,7 +162,7 @@ def gt():
             else:
                 opPush(False)
         else:
-            #print("Error:  - one of the operands is not a numerical value") 
+            print("Error:  - one of the operands is not a numerical value") 
             opPush(op1)
             opPush(op2)
     else:
@@ -178,7 +178,7 @@ def psAnd():
             else:
                 opPush(False)
         else:
-            #print("Error: psAnd - variables are not Boolean") 
+            print("Error: psAnd - variables are not Boolean") 
             opPush(op1)
             opPush(op2)
     else:
@@ -194,7 +194,7 @@ def psOr():
             else:
                 opPush(False)
         else:
-            #print("Error: psOr - variables are not Boolean") 
+            print("Error: psOr - variables are not Boolean") 
             opPush(op1)
             opPush(op2)
     else:
@@ -246,7 +246,6 @@ def getinterval(): # <array> <index> <count> getinterval()
                l.append(arr[index + i])
         except IndexError:
             print("index out of range")
-        print(l)
         opPush(l)
     else:
         opPush(arr)
@@ -295,7 +294,7 @@ def dup():
 def copy():
     count = opPop()
     opStackCopy = opstack[:]
-    if count < len(opStackCopy):
+    if count <= len(opStackCopy):
         while count > 0:
             opPush(opStackCopy[-count])
             count -= 1
@@ -348,7 +347,7 @@ def counttomark():
 
 
 def stack():
-    if(opstack > 0):
+    if len(opstack) > 0:
         opstack.reverse()
         for val in opstack:
             print(val)
@@ -361,7 +360,7 @@ def stack():
 # Note that psDef()won't have any parameters.
 
 def psDict():
-    if opstack > 0:
+    if len(opstack) > 0:
         val = opPop()
         if(isinstance(val, int)):
             opPush({})
@@ -369,7 +368,7 @@ def psDict():
             opPush(val)
 
 def begin():
-    if opstack > 0:
+    if len(opstack) > 0:
         newdict = opPop()
         if type(newdict) is dict:
             dictPush(newdict)
@@ -384,7 +383,7 @@ def end():
         print("ERROR: end() - no dicts to pop")
 
 def psDef():
-    if opstack > 1:
+    if len(opstack) > 1:
         val1 = opPop()
         val2 = opPop()
         if isinstance(val1, str):
