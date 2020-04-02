@@ -14,16 +14,16 @@ def tokenize(s):
 def groupMatch(it):
     res = []
     for c in it:
-        if c == '}':
+        if c == '}': # End of code block
             return {'codearray':res}
-        elif c=='{':
+        elif c=='{': # Begining of new code Block
             res.append(groupMatch(it))
             # Note how we use a recursive call to group the tokens inside the
             # inner matching parenthesis.
             # Once the recursive call returns the code-array for the inner 
             # parenthesis, it will be appended to the list we are constructing 
             # as a whole.
-        elif c == 'true':
+        elif c == 'true': # Boolean conversion 
             res.append(True)
         elif c == 'false':
             res.append(False)
@@ -38,10 +38,10 @@ def listMatch(L):
     l = []
     item = ''
     for i in range(len(L)):
-        if i == 0:
+        if i == 0: # skipping the starting '['
             continue
-        elif L[i] == ']':
-            if item == 'false':
+        elif L[i] == ']': # End of list
+            if item == 'false': # Double check to clear cache in 'item'
                 l.append(False)
             elif item == 'true':
                 l.append(True)
@@ -51,9 +51,9 @@ def listMatch(L):
                 except:
                     l.append(item)
             return l
-        elif L[i] == '[':
+        elif L[i] == '[': # Start of listception 
             l.append(listMatch(i)) # this won't work
-        elif L[i] == ' ':
+        elif L[i] == ' ': # new variable, clear cache in 'item
             if item == 'true' :
                 l.append(True)
                 item = ''
@@ -62,7 +62,7 @@ def listMatch(L):
                 item = ''
             else:
                 try:
-                    l.append(int(item))
+                    l.append(int(item)) # tests for int
                     item = ''
                 except:
                     l.append(item)
@@ -84,17 +84,17 @@ def parse(L):
         if c=='}':  #non matching closing parenthesis; return false since there is 
                     # a syntax error in the Postscript code.
             return False
-        elif c == 'true':
+        elif c == 'true': # Boolean Conversion 
             res.append(True)
         elif c == 'false':
             res.append(False)
-        elif c=='{':
+        elif c=='{': 
             res.append(groupMatch(it))
         elif c[0] == '[':
             res.append(listMatch(c))
         else:
             try:
-                res.append(int(c))
+                res.append(int(c)) # tests for integer
             except:
                 res.append(c)
     return {'codearray':res}
@@ -106,29 +106,29 @@ def parse(L):
 def interpretSPS(code): # code is a code array
     commandlist = code.get('codearray')
     for command in commandlist:
-        if isinstance(command, dict) or isinstance(command, int) or isinstance(command, bool):
+        if isinstance(command, dict) or isinstance(command, int) or isinstance(command, bool): # Test for Bool, Int, or dict to be pushed directly to stack
             opPush(command)
-        elif isinstance(command, list):   
-            opPush(evaluateList(command)) # ToDo Implement
-        elif (isinstance(command, str)):
-            if(command[0] == '/'):
+        elif isinstance(command, list):  # Evaluates and pushes list
+            opPush(evaluateList(command)) 
+        elif (isinstance(command, str)): 
+            if(command[0] == '/'): # '/' is a variable name, push to stack
                 opPush(command)
-            elif command in commanddict:
+            elif command in commanddict: # checks to see if the string is a command
                 commanddict[command]()
             else:
-                val = lookup(command)
-                if isinstance(val, dict):
+                val = lookup(command) # variable is not a command or unassinged variable, check for definition
+                if isinstance(val, dict): # could be code block, Intepret 
                     interpretSPS(val)
-                elif val is not None:
+                elif val is not None: # Variable is something, push to stack
                     opPush(val)
                 else:
-                    print("ERROR: Unhandeled command")
+                    print("ERROR: Unhandeled command") # Variable matches no definitions 
         else: 
             print("ERROR: Unhandeled command")
 
 
 def interpreter(s): # s is a string
-    interpretSPS(parse(tokenize(s)))
+    interpretSPS(parse(tokenize(s))) 
 
 #clear opstack and dictstack
 def clearStacks():
@@ -138,7 +138,7 @@ def clearStacks():
 def psIf(): #<Bool> <code> psIf()
     code = opPop()
     isTrue = opPop()
-    if isinstance(isTrue, bool) and isinstance(code, dict) and ('codearray' in code):
+    if isinstance(isTrue, bool) and isinstance(code, dict) and ('codearray' in code): # Checks for booleans and code block
         if(isTrue):
             interpretSPS(code)
     else:
@@ -165,7 +165,7 @@ def psIfelse(): # <Bool> <code if true> <code if false> psIfelse()
 def psRepeat(): #<count> <code array> psRepeat()
     code = opPop()
     count = opPop()
-    if isinstance(count, int) and isinstance(code, dict) and ('codearray' in code):
+    if isinstance(count, int) and isinstance(code, dict) and ('codearray' in code): # Checks for int and code block
         for i in range(count):
             interpretSPS(code)
     else:
@@ -182,15 +182,15 @@ def forall(): #<array> <code array> forall() # one at a time
             interpretSPS(codeArr)
 
 def evaluateList(list):
-    global opstack
-    opStackCopy = opstack[:]
-    opstack[:] = []
-    interpretSPS({'codearray':list})
-    eList = opstack[:]
-    opstack[:] = opStackCopy[:]
+    global opstack # make sure to refrence global opstack
+    opStackCopy = opstack[:] # Makes a copy of opstack
+    opstack[:] = [] # Clears opstack
+    interpretSPS({'codearray':list}) # interprets code blcok 
+    eList = opstack[:] # Stores the interpreted code block to a variable
+    opstack[:] = opStackCopy[:] # Restore's opstack's previous state
     return eList
 
-commanddict = {
+commanddict = { # List of all recognizeable string commands
     'add' : add,
     'sub' : sub,
     'mul' : mul,
