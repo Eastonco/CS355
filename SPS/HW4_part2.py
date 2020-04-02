@@ -23,8 +23,15 @@ def groupMatch(it):
             # Once the recursive call returns the code-array for the inner 
             # parenthesis, it will be appended to the list we are constructing 
             # as a whole.
+        elif c == 'true':
+            res.append(True)
+        elif c == 'false':
+            res.append(False)
         else:
-            res.append(c)
+            try:
+                res.append(int(c))
+            except:
+                res.append(c)
     return False
 
 def listMatch(L):
@@ -34,10 +41,15 @@ def listMatch(L):
         if i == 0:
             continue
         elif L[i] == ']':
-            try:
-                l.append(int(item))
-            except:
-                l.append(item)
+            if item == 'false':
+                l.append(False)
+            elif item == 'true':
+                l.append(True)
+            else:
+                try:
+                    l.append(int(item))
+                except:
+                    l.append(item)
             return l
         elif L[i] == '[':
             l.append(listMatch(i)) # this won't work
@@ -211,7 +223,10 @@ commanddict = {
     'end' : end,
     'def' : psDef,
 
-    'forall' : forall
+    'forall' : forall,
+    'if' : psIf,
+    'ifelse' : psIfelse,
+    'repeat' : psRepeat
     }
 
 
