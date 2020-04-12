@@ -145,6 +145,48 @@ class HW4_part2_SampleTests(unittest.TestCase):
         interpreter(testinput11)
         self.assertEqual(opstack,opstackOutput)
 
+    def test_custom1(self):
+        testinput12 = """
+            3 5 lt {0 [1 2 3 4] {add} forall } if
+        """
+        opstackOutput = [10]
+        interpreter(testinput12)
+        self.assertEqual(opstack, opstackOutput)
+    
+    def test_custom2(self):
+        testinput13 = """
+            /x 4 def
+            /y 5 def
+            x y mul
+            5 sub
+        """
+        opstackOutput = [15]
+        interpreter(testinput13)
+        self.assertEqual(opstack, opstackOutput)
+    
+    def test_custom3(self):
+        testinput14 = """
+            1 1 1 add add
+        """
+        opstackOutput = [3]
+        interpreter(testinput14)
+        self.assertEqual(opstackOutput, opstack)
+    
+    def test_custom4(self):
+        testinput15 = """
+                /x true def /y true def x y and 
+            """
+        opstackOutput = [True]
+        interpreter(testinput15)
+        self.assertEqual(opstackOutput, opstack) 
+    
+    def test_custom5(self):
+        testinput16 = """
+                true false and
+            """
+        opstackOutput = [False]
+        interpreter(testinput16)
+        self.assertEqual(opstackOutput, opstack)
 
 if __name__ == '__main__':
     unittest.main()

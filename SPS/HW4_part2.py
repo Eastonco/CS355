@@ -27,6 +27,8 @@ def groupMatch(it):
             res.append(True)
         elif c == 'false':
             res.append(False)
+        elif c[0] == '[':
+            res.append(listMatch(c))
         else:
             try:
                 res.append(int(c))
@@ -240,7 +242,7 @@ input1 = """
 
 # print(tokenize(input1))
 # print(parse(tokenize(input1)))
-print(parse(['b', 'c', '{', 'a', '{', 'a', 'b', '}', '{', '{', 'e', '}', 'a', '}', '}']))
+# print(parse(['b', 'c', '{', 'a', '{', 'a', 'b', '}', '{', '{', 'e', '}', 'a', '}', '}']))
 
 
 
