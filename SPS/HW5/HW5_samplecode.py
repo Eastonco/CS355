@@ -776,9 +776,7 @@ def sspsTests():
     /B { /x [6 7 8 9] def /A { x 0 get} def /a 5 def C } def
     B
     """
-    # ssps_testinputs = [testinput1, testinput2, testinput3, testinput4, testinput5, testinput6, testinput7, testinput8]
-    # tests that don't work: 8
-    ssps_testinputs = [testinput8]
+    ssps_testinputs = [testinput1, testinput2, testinput3, testinput4, testinput5, testinput6, testinput7, testinput8]
     i = 1
     for input in ssps_testinputs:
         print('TEST CASE -',i)
