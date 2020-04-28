@@ -1,8 +1,8 @@
 # Connor Easton 11557902
 import re
-import copy
 # Part 1 code -----------------------------------------------------------------------------------
 opstack = []  #assuming top of the stack is the end of the list
+globalScope = ''
 
 def opPop():
     return opstack.pop()
@@ -14,7 +14,7 @@ def opPush(value):
         opstack.append(cleartomark())
     elif (isinstance(value,str)) and (value[0] != '/'):
         if(value != "-mark-"):
-            opstack.append(lookup(value))
+            opstack.append(lookup(value, globalScope))
         else:
             opstack.append("-mark-")
     else:
@@ -26,33 +26,58 @@ dictstack = []  #assuming top of the stack is the end of the list
 def dictPop():
     return dictstack.pop()
 
-def dictPush(d): # TODO:Add scope
+def dictPush(d): # TODO: support scope
     dictstack.append(d)
 
-def define(name, value): # TODO: Add scope
+def define(name, value): 
     try:
-        mydict = dictPop()
-        mydict[name] = value
-        dictPush(mydict)
+        dicttuple = dictPop()
+        dicttuple[0][name] = value
+        dictPush(dicttuple)
     except IndexError:
-        dictPush({})
+        dictPush(({},0))
         mydict = dictPop()
-        mydict[name] = value
+        mydict[0][name] = value
         dictPush(mydict)
 
 
-def lookup(name): # TODO: add scope 
-    dictstack.reverse()
-    searchName = '/' + name
-    for d in dictstack:
-        if d.get(searchName) is not None:
-            val = d.get(searchName)
-            break
-    dictstack.reverse()
-    try:
+def staticFinder(d, searchName):
+    if d[0].get(searchName) is not None:
+        val = d[0].get(searchName)
         return val
-    except:
-        print("No value found")
+    else:
+        staticRef = d[1]
+        if staticRef == 0:
+            d = dictstack[staticRef]
+            if d[0].get(searchName) is not None:
+                return d[0].get(searchName)
+            else:
+                print("No value found")
+            
+        else:
+            return staticFinder(dictstack[staticRef], searchName)
+
+
+def lookup(name, scope): # TODO: support scope FIXME
+    searchName = '/' + name
+
+    if scope == 'static':
+        d = dictPop()
+        val = staticFinder(d, searchName)
+        dictPush(d)
+        return val
+    
+    else: 
+        dictstack.reverse()
+        for d in dictstack:
+            if d[0].get(searchName) is not None:
+                val = d[0].get(searchName)
+                break
+        dictstack.reverse()
+        try:
+            return val
+        except:
+            print("No value found")
 
 def add():
     if len(opstack) > 1:
@@ -314,12 +339,25 @@ def counttomark():
         print("Error: counttomark() - no mark in stack")
 
 
-def stack(): # TODO: add scope
+def stack(): # TODO: support scope ***NEW*** now supports dict stack
+    print('==============')
     if len(opstack) > 0:
         opstack.reverse()
         for val in opstack:
             print(val)
         opstack.reverse()
+    print('==============')
+    dictstack.reverse()
+    dictcount = len(dictstack) - 1
+    for d in dictstack:
+        print('----', dictcount, '----', d[1], '----', sep='')
+        dictcount -= 1
+        for key, val in d[0].items():
+            print(key, val, sep = '   ')
+    print('==============')
+    dictstack.reverse()
+
+    
 
 # Dict operators
 def psDict():
@@ -463,7 +501,7 @@ def parse(L):
 # but it will have a very regular and obvious structure if you've followed the plan of the assignment.
 # Write additional auxiliary functions if you need them. 
 """
-def interpretSPS(code): # code is a code array # TODO: add scope
+def interpretSPS(code): # code is a code array # TODO: add scope Argument
     commandlist = code.get('codearray')
     for command in commandlist:
         if isinstance(command, dict) or isinstance(command, int) or isinstance(command, bool): # Test for Bool, Int, or dict to be pushed directly to stack
@@ -487,7 +525,7 @@ def interpretSPS(code): # code is a code array # TODO: add scope
             print("ERROR: Unhandeled command")
 
 
-def interpreter(s): # s is a string # TODO: add scope
+def interpreter(s): # s is a string # TODO: add scope Arugment
     interpretSPS(parse(tokenize(s))) 
     """
 
@@ -496,26 +534,32 @@ def clearStacks():
     opstack[:] = []
     dictstack[:] = []
 
-def psIf(): #<Bool> <code> psIf() # TODO: add scope
+def psIf(scope): #<Bool> <code> psIf() # TODO: add scope argument
     code = opPop()
     isTrue = opPop()
     if isinstance(isTrue, bool) and isinstance(code, dict) and ('codearray' in code): # Checks for booleans and code block
         if(isTrue):
-            interpretSPS(code)
+            dictPush(({},len(dictstack)))
+            interpretSPS(code, scope)
+            dictPop()
     else:
         opPush(isTrue)
         opPush(code)
         print("Error: psIf() expects a code block and a boolean")
 
-def psIfelse(): # <Bool> <code if true> <code if false> psIfelse() # TODO: add scope
+def psIfelse(scope): # <Bool> <code if true> <code if false> psIfelse() # TODO: add scope argument
     falseCode = opPop()
     trueCode = opPop()
     isTrue = opPop()
     if isinstance(isTrue, bool) and isinstance(trueCode, dict) and ('codearray' in trueCode) and isinstance(falseCode, dict) and ('codearray' in falseCode):
         if(isTrue):
-            interpretSPS(trueCode)
+            dictPush(({},len(dictstack)))
+            interpretSPS(trueCode, scope)
+            dictPop()
         else:
-            interpretSPS(falseCode)
+            dictPush(({},len(dictstack)))
+            interpretSPS(falseCode, scope)
+            dictPop()
     else:
         opPush(isTrue)
         opPush(trueCode)
@@ -523,30 +567,36 @@ def psIfelse(): # <Bool> <code if true> <code if false> psIfelse() # TODO: add s
         print("Error: psIfelse() expects two code blocks and a boolean")
     
 
-def psRepeat(): #<count> <code array> psRepeat() # TODO: add scope
+def psRepeat(scope): #<count> <code array> psRepeat() # TODO: add scope argument
     code = opPop()
     count = opPop()
     if isinstance(count, int) and isinstance(code, dict) and ('codearray' in code): # Checks for int and code block
         for i in range(count):
-            interpretSPS(code)
+            dictPush(({},len(dictstack)))
+            interpretSPS(code,scope)
+            dictPop()
     else:
         opPush(count)
         opPush(code)
         print("Error: psRepeat() expects a code block and an int")
 
-def forall(): #<array> <code array> forall() # one at a time # TODO: add scope
+def forall(scope): #<array> <code array> forall() # one at a time # TODO: add scope argument
     if len(opstack) > 1:
         codeArr = opPop()
         arr = opPop()
         for val in arr:
             opPush(val)
-            interpretSPS(codeArr)
+            dictPush(({},len(dictstack)))
+            interpretSPS(codeArr, scope)
+            dictPop()
 
-def evaluateList(list):
+def evaluateList(list, scope):
     global opstack # make sure to refrence global opstack
     opStackCopy = opstack[:] # Makes a copy of opstack
     opstack[:] = [] # Clears opstack
-    interpretSPS({'codearray':list}) # interprets code blcok 
+    dictPush(({},len(dictstack)))
+    interpretSPS({'codearray':list}, scope) # interprets code blcok 
+    dictPop()
     eList = opstack[:] # Stores the interpreted code block to a variable
     opstack[:] = opStackCopy[:] # Restore's opstack's previous state
     return eList
@@ -582,35 +632,80 @@ commanddict = { # List of all recognizeable string commands
     'dict' : psDict,
     'begin' : begin,
     'end' : end,
-    'def' : psDef,
+    'def' : psDef
+    }
 
+scopeCommands = {
     'forall' : forall,
     'if' : psIf,
     'ifelse' : psIfelse,
     'repeat' : psRepeat
-    }
-
+}
 
 # ------ SSPS functions -----------
 # search the dictstack for the dictionary "name" is defined in and return the (list) index for that dictionary (start searhing at the top of the stack)
 def staticLink(name):
-    pass
+    #dictstack.reverse()
+    searchName = '/' + name
+    index = linkHelper(searchName, (len(dictstack)-1))
+    #dictstack.reverse()
+    return index
+
+
+def linkHelper(searchName, index):
+    d = dictstack[index][0]
+    if searchName in d:
+        return index
+    else:
+        return linkHelper(searchName, dictstack[index][1])
+
+
+
 
 #the main recursive interpreter function
 def interpretSPS(tokenList,scope):
-    pass
+    commandlist = tokenList.get('codearray')
+    for command in commandlist:
+        if isinstance(command, dict) or isinstance(command, int) or isinstance(command, bool): # Test for Bool, Int, or dict to be pushed directly to stack
+            opPush(command)
+        elif isinstance(command, list):  # Evaluates and pushes list
+            opPush(evaluateList(command, scope)) 
+        elif (isinstance(command, str)): 
+            if(command[0] == '/'): # '/' is a variable name, push to stack
+                opPush(command)
+            elif command in commanddict: # checks to see if the string is a command
+                commanddict[command]()
+            elif command in scopeCommands:
+                scopeCommands[command](scope)
+            else:
+                val = lookup(command, scope) # variable is not a command or unassinged variable, check for definition
+                if isinstance(val, dict): # could be code block, Intepret 
+                    dictPush(({},staticLink(command)))
+                    interpretSPS(val, scope)
+                    dictPop()
+                elif val is not None: # Variable is something, push to stack
+                    opPush(val)
+                else:
+                    print("ERROR: Unhandeled command") # Variable matches no definitions 
+        else: 
+            print("ERROR: Unhandeled command")
 
 #parses the input string and calls the recursive interpreter to solve the
 #program
 def interpreter(s, scope):
+    global globalScope 
+    globalScope = scope
     tokenL = parse(tokenize(s))
+    dictPush(({},0))
     interpretSPS(tokenL,scope)
+    dictPop()
 
 #clears both stacks
 def clearBoth():
     opstack[:] = []
     dictstack[:] = []
-
+    global globalScope
+    globalScope = ''
 ########################################################################
 ####  ASSIGNMENT 5 - SSPS TESTS
 ########################################################################
@@ -680,15 +775,19 @@ def sspsTests():
     /B { /x [6 7 8 9] def /A { x 0 get} def /a 5 def C } def
     B
     """
-    ssps_testinputs = [testinput1, testinput2, testinput3, testinput4, testinput5, testinput6, testinput7, testinput8]
+    # ssps_testinputs = [testinput1, testinput2, testinput3, testinput4, testinput5, testinput6, testinput7, testinput8]
+    # tests that don't work: 5&8
+    ssps_testinputs = [testinput8]
     i = 1
     for input in ssps_testinputs:
         print('TEST CASE -',i)
         i += 1
-        print("Static")
+        print("\nStatic\n")
         interpreter(input, "static")
         clearBoth()
-        print("Dynamic")
+        print("\nDynamic\n")
         interpreter(input, "dynamic")
         clearBoth()
         print('\n-----------------------------')
+
+sspsTests()
