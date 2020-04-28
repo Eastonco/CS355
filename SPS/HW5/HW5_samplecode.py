@@ -53,6 +53,7 @@ def staticFinder(d, searchName):
                 return d[0].get(searchName)
             else:
                 print("No value found")
+        
             
         else:
             return staticFinder(dictstack[staticRef], searchName)
@@ -572,7 +573,7 @@ def psRepeat(scope): #<count> <code array> psRepeat() # TODO: add scope argument
     count = opPop()
     if isinstance(count, int) and isinstance(code, dict) and ('codearray' in code): # Checks for int and code block
         for i in range(count):
-            dictPush(({},len(dictstack)))
+            dictPush(({},len(dictstack)-1))
             interpretSPS(code,scope)
             dictPop()
     else:
@@ -594,7 +595,7 @@ def evaluateList(list, scope):
     global opstack # make sure to refrence global opstack
     opStackCopy = opstack[:] # Makes a copy of opstack
     opstack[:] = [] # Clears opstack
-    dictPush(({},len(dictstack)))
+    dictPush(({},len(dictstack)-1))
     interpretSPS({'codearray':list}, scope) # interprets code blcok 
     dictPop()
     eList = opstack[:] # Stores the interpreted code block to a variable
@@ -776,7 +777,7 @@ def sspsTests():
     B
     """
     # ssps_testinputs = [testinput1, testinput2, testinput3, testinput4, testinput5, testinput6, testinput7, testinput8]
-    # tests that don't work: 5&8
+    # tests that don't work: 8
     ssps_testinputs = [testinput8]
     i = 1
     for input in ssps_testinputs:
