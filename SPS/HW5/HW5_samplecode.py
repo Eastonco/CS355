@@ -1,5 +1,6 @@
 # Connor Easton 11557902
 # Last updated April 28, 2020
+# WSU CPTS 355
 
 import re
 

@@ -1,3 +1,6 @@
+-- Connor Easton 11557902
+-- CptS 355 - Spring 2020 Assignment 1
+
 {-Haskell is available for Windows, Mac, and Linux. Here's the download page: http://www.haskell.org/platform/.
 
 We will be using the HUnit unit testing package in CptS 355. -}

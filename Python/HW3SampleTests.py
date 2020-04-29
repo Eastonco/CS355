@@ -1,3 +1,8 @@
+# Connor Easton - 11557902
+# Created: March 7, 2020
+# Last Updated: ^
+# WSU CPTS 355, Assignment 3, Spring 2020
+
 import unittest
 from HW3 import *
 
