@@ -776,11 +776,46 @@ def sspsTests():
     /B { /x [6 7 8 9] def /A { x 0 get} def /a 5 def C } def
     B
     """
+    custominput1 = """
+    /X true def
+    /Y true def
+    /K { X Y and stack } def
+    /J { /X false def K } def
+    J
+    """
+    custominput2 = """
+    /X [1 5 add] def
+    /Y [7 3 mul] def
+    /Y { X stack } def
+    /Z { /X 4 def Y } def
+    Z
+    """
+    custominput3 = """
+    /x 1 def
+    /y 3 def 
+    /h { y stack } def
+    /z { /y 10 def h } def
+    z
+    """
     ssps_testinputs = [testinput1, testinput2, testinput3, testinput4, testinput5, testinput6, testinput7, testinput8]
     i = 1
     for input in ssps_testinputs:
         print('TEST CASE -',i)
         i += 1
+        print("\nStatic\n")
+        interpreter(input, "static")
+        clearBoth()
+        print("\nDynamic\n")
+        interpreter(input, "dynamic")
+        clearBoth()
+        print('\n-----------------------------')
+    
+    ssps_custominputs = [ custominput3]
+    j = 1
+    print("\n\n\nCUSTOM INPUTS \n\n\n")
+    for input in ssps_custominputs:
+        print('TEST CASE -',j)
+        j += 1
         print("\nStatic\n")
         interpreter(input, "static")
         clearBoth()
