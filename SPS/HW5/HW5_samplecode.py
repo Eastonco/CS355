@@ -810,7 +810,7 @@ def sspsTests():
         clearBoth()
         print('\n-----------------------------')
     
-    ssps_custominputs = [ custominput3]
+    ssps_custominputs = [custominput1, custominput2, custominput3]
     j = 1
     print("\n\n\nCUSTOM INPUTS \n\n\n")
     for input in ssps_custominputs:
