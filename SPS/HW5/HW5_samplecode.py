@@ -1,11 +1,16 @@
 # Connor Easton 11557902
+# Last updated April 28, 2020
+
 import re
-# Part 1 code -----------------------------------------------------------------------------------
-opstack = []  #assuming top of the stack is the end of the list
-globalScope = ''
+
+opstack = []  # assuming top of the stack is the end of the list
+dictstack = []  # assuming top of the stack is the end of the list
+globalScope = '' # I had to implement a global scope variable as opPush() utilizes the lookup() function which needs a scope value.
+
 
 def opPop():
     return opstack.pop()
+
 
 def opPush(value):
     if (value == '['):
@@ -21,15 +26,15 @@ def opPush(value):
         opstack.append(value)
 
 
-dictstack = []  #assuming top of the stack is the end of the list
-
 def dictPop():
     return dictstack.pop()
 
-def dictPush(d): # TODO: support scope
+
+def dictPush(d): 
     dictstack.append(d)
 
-def define(name, value): 
+
+def define(name, value): # **NEW AND IMPROVED** now supports scope
     try:
         dicttuple = dictPop()
         dicttuple[0][name] = value
@@ -41,7 +46,7 @@ def define(name, value):
         dictPush(mydict)
 
 
-def staticFinder(d, searchName):
+def staticFinder(d, searchName): # accpets a dictionary and a search name. returns the value from the dict using a static lookup, is also recursive
     if d[0].get(searchName) is not None:
         val = d[0].get(searchName)
         return val
@@ -59,15 +64,14 @@ def staticFinder(d, searchName):
             return staticFinder(dictstack[staticRef], searchName)
 
 
-def lookup(name, scope): # TODO: support scope FIXME
-    searchName = '/' + name
+def lookup(name, scope): 
+    searchName = '/' + name # variables are stored with a '/' in the dicts
 
     if scope == 'static':
         d = dictPop()
         val = staticFinder(d, searchName)
         dictPush(d)
         return val
-    
     else: 
         dictstack.reverse()
         for d in dictstack:
@@ -79,6 +83,7 @@ def lookup(name, scope): # TODO: support scope FIXME
             return val
         except:
             print("No value found")
+
 
 def add():
     if len(opstack) > 1:
@@ -93,6 +98,7 @@ def add():
     else:
         print("Error: add expects 2 operands")
 
+
 def sub():
     if len(opstack) > 1: 
         op2 = opPop()
@@ -105,7 +111,7 @@ def sub():
             opPush(op2)
     else:
         print("Error: sub expects 2 operands")
-        
+
 
 def mul():
     if len(opstack) > 1: 
@@ -119,7 +125,7 @@ def mul():
             opPush(op2)
     else:
         print("Error: mul expects 2 operands")
-        
+
 
 def eq():
     if len(opstack) > 1: 
@@ -131,6 +137,7 @@ def eq():
             opPush(False)
     else:
         print("Error: eq expects 2 operands")
+
 
 def lt():
     if len(opstack) > 1: 
@@ -165,6 +172,7 @@ def gt():
     else:
         print("Error: gt expects 2 operands")
 
+
 def psAnd():
     if len(opstack) > 1: 
         op2 = opPop()
@@ -181,6 +189,7 @@ def psAnd():
     else:
         print("Error: psNot expects 2 operands")
 
+
 def psOr():
     if len(opstack) > 1: 
         op2 = opPop()
@@ -196,6 +205,7 @@ def psOr():
             opPush(op2)
     else:
         print("Error: psNot expects 2 operands")
+
 
 def psNot():
     if len(opstack) > 0: 
@@ -216,6 +226,7 @@ def length(): # pops an array from stack, returns it's length
         opPush(val)
         print("Value not a list")
 
+
 def get(): # <array> <index> get(), get value at index and push to stack
     index = opPop()
     arr = opPop()
@@ -228,6 +239,7 @@ def get(): # <array> <index> get(), get value at index and push to stack
         opPush(arr)
         opPush(index)
         print("types are not list and int")
+
 
 def getinterval(): # <array> <index> <count> getinterval()
     count = opPop()
@@ -285,6 +297,7 @@ def dup():
     opPush(val)
     opPush(val)
 
+
 def copy():
     count = opPop()
     opStackCopy = opstack[:]
@@ -296,6 +309,7 @@ def copy():
         opPush(count)
         print("Error: copy count is larger than list")
 
+
 def count():
     opPush(len(opstack))
 
@@ -303,16 +317,20 @@ def count():
 def pop(): 
     return opPop()
 
+
 def clear():
     opstack.clear()
+
 
 def exch():
     tmp = opstack[-1]
     opstack[-1] = opstack[-2]
     opstack[-2] = tmp
 
+
 def mark():
     opPush("-mark-")
+
 
 def cleartomark():
     if "-mark-" in opstack:
@@ -324,6 +342,7 @@ def cleartomark():
         return l
     else:
         print("No -mark- ins stack")
+
 
 def counttomark():
     if "-mark-" in opstack:
@@ -358,8 +377,6 @@ def stack(): # TODO: support scope ***NEW*** now supports dict stack
     print('==============')
     dictstack.reverse()
 
-    
-
 # Dict operators
 def psDict():
     if len(opstack) > 0:
@@ -368,6 +385,7 @@ def psDict():
             opPush({})
         else:
             opPush(val)
+
 
 def begin():
     if len(opstack) > 0:
@@ -378,11 +396,13 @@ def begin():
             opPush(newdict)
             print("Error: begin - popped val is not dict")
 
+
 def end():
     try:
         dictPop()
     except IndexError:
         print("ERROR: end() - no dicts to pop")
+
 
 def psDef():
     if len(opstack) > 1:
@@ -401,12 +421,6 @@ def psDef():
 def tokenize(s):
     return re.findall("/?[a-zA-Z][a-zA-Z0-9_]*|[\[][a-zA-Z-?0-9_\s!][a-zA-Z-?0-9_\s!]*[\]]|[-]?[0-9]+|[}{]+|%.*|[^ \t\n]", s)
     
-
-
-# COMPLETE THIS FUNCTION
-# The it argument is an iterator.
-# The tokens between '{' and '}' is included as a sub code-array (dictionary). If the
-# parenteses in the input iterator is not properly nested, returns False.
 def groupMatch(it):
     res = []
     for c in it:
@@ -414,11 +428,6 @@ def groupMatch(it):
             return {'codearray':res}
         elif c=='{': # Begining of new code Block
             res.append(groupMatch(it))
-            # Note how we use a recursive call to group the tokens inside the
-            # inner matching parenthesis.
-            # Once the recursive call returns the code-array for the inner 
-            # parenthesis, it will be appended to the list we are constructing 
-            # as a whole.
         elif c == 'true': # Boolean conversion 
             res.append(True)
         elif c == 'false':
@@ -470,11 +479,6 @@ def listMatch(L):
             
     return False
 
-
-# COMPLETE THIS FUNCTION
-# Function to parse a list of tokens and arrange the tokens between { and } braces 
-# as code-arrays.
-# Properly nested parentheses are arranged into a list of properly nested dictionaries.
 def parse(L):
     res = []
     it = iter(L)
@@ -497,45 +501,13 @@ def parse(L):
                 res.append(c)
     return {'codearray':res}
 
-# COMPLETE THIS FUNCTION 
-# This will probably be the largest function of the whole project, 
-# but it will have a very regular and obvious structure if you've followed the plan of the assignment.
-# Write additional auxiliary functions if you need them. 
-"""
-def interpretSPS(code): # code is a code array # TODO: add scope Argument
-    commandlist = code.get('codearray')
-    for command in commandlist:
-        if isinstance(command, dict) or isinstance(command, int) or isinstance(command, bool): # Test for Bool, Int, or dict to be pushed directly to stack
-            opPush(command)
-        elif isinstance(command, list):  # Evaluates and pushes list
-            opPush(evaluateList(command)) 
-        elif (isinstance(command, str)): 
-            if(command[0] == '/'): # '/' is a variable name, push to stack
-                opPush(command)
-            elif command in commanddict: # checks to see if the string is a command
-                commanddict[command]()
-            else:
-                val = lookup(command) # variable is not a command or unassinged variable, check for definition
-                if isinstance(val, dict): # could be code block, Intepret 
-                    interpretSPS(val)
-                elif val is not None: # Variable is something, push to stack
-                    opPush(val)
-                else:
-                    print("ERROR: Unhandeled command") # Variable matches no definitions 
-        else: 
-            print("ERROR: Unhandeled command")
-
-
-def interpreter(s): # s is a string # TODO: add scope Arugment
-    interpretSPS(parse(tokenize(s))) 
-    """
-
 #clear opstack and dictstack
 def clearStacks():
     opstack[:] = []
     dictstack[:] = []
 
-def psIf(scope): #<Bool> <code> psIf() # TODO: add scope argument
+
+def psIf(scope): #<Bool> <code> psIf() 
     code = opPop()
     isTrue = opPop()
     if isinstance(isTrue, bool) and isinstance(code, dict) and ('codearray' in code): # Checks for booleans and code block
@@ -548,7 +520,8 @@ def psIf(scope): #<Bool> <code> psIf() # TODO: add scope argument
         opPush(code)
         print("Error: psIf() expects a code block and a boolean")
 
-def psIfelse(scope): # <Bool> <code if true> <code if false> psIfelse() # TODO: add scope argument
+
+def psIfelse(scope): # <Bool> <code if true> <code if false> psIfelse() 
     falseCode = opPop()
     trueCode = opPop()
     isTrue = opPop()
@@ -568,7 +541,7 @@ def psIfelse(scope): # <Bool> <code if true> <code if false> psIfelse() # TODO: 
         print("Error: psIfelse() expects two code blocks and a boolean")
     
 
-def psRepeat(scope): #<count> <code array> psRepeat() # TODO: add scope argument
+def psRepeat(scope): #<count> <code array> psRepeat() 
     code = opPop()
     count = opPop()
     if isinstance(count, int) and isinstance(code, dict) and ('codearray' in code): # Checks for int and code block
@@ -581,7 +554,8 @@ def psRepeat(scope): #<count> <code array> psRepeat() # TODO: add scope argument
         opPush(code)
         print("Error: psRepeat() expects a code block and an int")
 
-def forall(scope): #<array> <code array> forall() # one at a time # TODO: add scope argument
+
+def forall(scope): #<array> <code array> forall() # one at a time
     if len(opstack) > 1:
         codeArr = opPop()
         arr = opPop()
@@ -590,6 +564,7 @@ def forall(scope): #<array> <code array> forall() # one at a time # TODO: add sc
             dictPush(({},len(dictstack)))
             interpretSPS(codeArr, scope)
             dictPop()
+
 
 def evaluateList(list, scope):
     global opstack # make sure to refrence global opstack
@@ -601,6 +576,7 @@ def evaluateList(list, scope):
     eList = opstack[:] # Stores the interpreted code block to a variable
     opstack[:] = opStackCopy[:] # Restore's opstack's previous state
     return eList
+
 
 commanddict = { # List of all recognizeable string commands
     'add' : add,
@@ -660,9 +636,6 @@ def linkHelper(searchName, index):
     else:
         return linkHelper(searchName, dictstack[index][1])
 
-
-
-
 #the main recursive interpreter function
 def interpretSPS(tokenList,scope):
     commandlist = tokenList.get('codearray')
@@ -691,8 +664,7 @@ def interpretSPS(tokenList,scope):
         else: 
             print("ERROR: Unhandeled command")
 
-#parses the input string and calls the recursive interpreter to solve the
-#program
+#parses the input string and calls the recursive interpreter to solve the program
 def interpreter(s, scope):
     global globalScope 
     globalScope = scope
@@ -707,6 +679,7 @@ def clearBoth():
     dictstack[:] = []
     global globalScope
     globalScope = ''
+
 ########################################################################
 ####  ASSIGNMENT 5 - SSPS TESTS
 ########################################################################
