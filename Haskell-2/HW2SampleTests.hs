@@ -1,3 +1,6 @@
+-- CptS 355 - Spring 2020 Assignment 2
+-- Connor Easton 11557902
+
 {-Haskell HW2 HUnit test cases
  Please add at least 2 additional tests for each problem-}
 
